@@ -48,6 +48,28 @@
             color: #555;
             margin-top: 10px;
         }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        label, input, select {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        button {
+            background: green;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -65,5 +87,59 @@
         
         <a href="#" class="cta">Join the Movement</a>
     </div>
+    
+    <div class="container">
+        <h2>Enter Harvest Data</h2>
+        <form id="harvestForm">
+            <label for="plantName">Plant Name:</label>
+            <select id="plantName" required>
+                <option value="">Select a plant</option>
+                <option value="Tomato">Tomato</option>
+                <option value="Cabbage">Cabbage</option>
+                <option value="Carrot">Carrot</option>
+                <option value="Lettuce">Lettuce</option>
+            </select>
+            
+            <label for="harvestDate">Harvest Date:</label>
+            <input type="date" id="harvestDate" required>
+            
+            <label for="weight">Weight Harvested (lbs):</label>
+            <input type="number" id="weight" step="0.1" required>
+            
+            <label for="location">Harvest Location:</label>
+            <select id="location" required>
+                <option value="Garden Bed A">Garden Bed A</option>
+                <option value="Garden Bed B">Garden Bed B</option>
+                <option value="Greenhouse">Greenhouse</option>
+                <option value="Backyard">Backyard</option>
+            </select>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+            
+            <button type="button" onclick="submitForm()">Submit</button>
+        </form>
+    </div>
+    
+    <script>
+        async function submitForm() {
+            const data = {
+                plantName: document.getElementById('plantName').value,
+                harvestDate: document.getElementById('harvestDate').value,
+                weight: document.getElementById('weight').value,
+                location: document.getElementById('location').value,
+                password: document.getElementById('password').value
+            };
+
+            const response = await fetch('YOUR_API_GATEWAY_URL_HERE', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        }
+    </script>
 </body>
 </html>
