@@ -3,67 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harvesting Heroes</title>
+    <title>Harvest Entry Form</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             text-align: center;
-            background-color: #f4f4f4;
         }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px;
-            font-size: 24px;
-        }
-        .container {
-            padding: 50px;
-        }
-        .cta {
-            background-color: #ff9800;
-            color: white;
-            padding: 15px 25px;
-            text-decoration: none;
-            font-size: 18px;
-            border-radius: 5px;
+        form {
             display: inline-block;
-            margin-top: 20px;
-        }
-        .cta:hover {
-            background-color: #e68900;
-        }
-        .image-container {
-            margin-top: 30px;
-        }
-        .image-container img {
-            max-width: 80%;
-            height: auto;
+            text-align: left;
+            background: #f4f4f4;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
-        .caption {
-            font-size: 16px;
-            color: #555;
-            margin-top: 10px;
+        label, input, select {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        button {
+            background: green;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <header>
-        Harvesting Heroes
-    </header>
-    <div class="container">
-        <h1>Grow Big. Harvest More. Inspire Others.</h1>
-        <p>Welcome to Harvesting Heroes, where we show how easy it is to grow food, no matter your space or resources.</p>
+    <h2>Enter Harvest Data</h2>
+    <form id="harvestForm">
+        <label for="plantName">Plant Name:</label>
+        <input type="text" id="plantName" required>
         
-        <div class="image-container">
-            <img src="Malik & Nia harvesting onions.jpg" alt="Malik and Nia onion harvest">
-            <p class="caption">Malik and Nia show off their onion harvest. Join us in growing fresh, healthy food!</p>
-        </div>
+        <label for="harvestDate">Harvest Date:</label>
+        <input type="date" id="harvestDate" required>
         
-        <a href="#" class="cta">Join the Movement</a>
-    </div>
+        <label for="weight">Weight Harvested (lbs):</label>
+        <input type="number" id="weight" step="0.1" required>
+        
+        <label for="location">Harvest Location:</label>
+        <select id="location" required>
+            <option value="Garden Bed A">Garden Bed A</option>
+            <option value="Garden Bed B">Garden Bed B</option>
+            <option value="Greenhouse">Greenhouse</option>
+            <option value="Backyard">Backyard</option>
+        </select>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" required>
+        
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+    
+    <script>
+        async function submitForm() {
+            const data = {
+                plantName: document.getElementById('plantName').value,
+                harvestDate: document.getElementById('harvestDate').value,
+                weight: document.getElementById('weight').value,
+                location: document.getElementById('location').value,
+                password: document.getElementById('password').value
+            };
+            
+            const response = await fetch('YOUR_API_GATEWAY_URL_HERE', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            alert(result.message);
+        }
+    </script>
 </body>
 </html>
