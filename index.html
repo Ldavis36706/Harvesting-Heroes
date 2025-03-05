@@ -113,33 +113,65 @@
                 <option value="Greenhouse">Greenhouse</option>
                 <option value="Backyard">Backyard</option>
             </select>
-            
-            <label for="password">Password:</label>
-            <input type="password" id="password" required>
-            
-            <button type="button" onclick="submitForm()">Submit</button>
+    
+            <button type="button" onclick="addHarvest()">Add to List</button>
         </form>
+    
+        <h3>Harvest List</h3>
+        <ul id="harvestList"></ul>
+    
+        <button type="button" onclick="submitAll()">Submit All</button>
     </div>
     
     <script>
-        async function submitForm() {
-            const data = {
-                plantName: document.getElementById('plantName').value,
-                harvestDate: document.getElementById('harvestDate').value,
-                weight: document.getElementById('weight').value,
-                location: document.getElementById('location').value,
-                password: document.getElementById('password').value
-            };
-
+        let harvestEntries = [];
+    
+        function addHarvest() {
+            const plantName = document.getElementById('plantName').value;
+            const harvestDate = document.getElementById('harvestDate').value;
+            const weight = document.getElementById('weight').value;
+            const location = document.getElementById('location').value;
+    
+            if (!plantName || !harvestDate || !weight || !location) {
+                alert("Please fill in all fields.");
+                return;
+            }
+    
+            const entry = { plantName, harvestDate, weight, location };
+            harvestEntries.push(entry);
+    
+            // Update the UI
+            const listItem = document.createElement("li");
+            listItem.textContent = `${plantName} - ${weight} lbs on ${harvestDate} (${location})`;
+            document.getElementById('harvestList').appendChild(listItem);
+    
+            // Clear inputs
+            document.getElementById('plantName').value = "";
+            document.getElementById('harvestDate').value = "";
+            document.getElementById('weight').value = "";
+            document.getElementById('location').value = "";
+        }
+    
+        async function submitAll() {
+            if (harvestEntries.length === 0) {
+                alert("No harvests to submit.");
+                return;
+            }
+    
             const response = await fetch('YOUR_API_GATEWAY_URL_HERE', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: JSON.stringify({ harvests: harvestEntries })
             });
-
+    
             const result = await response.json();
             alert(result.message);
+    
+            // Clear the list after submission
+            document.getElementById('harvestList').innerHTML = "";
+            harvestEntries = [];
         }
-    </script>
+    </script>    
 </body>
 </html>
+
