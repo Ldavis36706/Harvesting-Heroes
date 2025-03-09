@@ -1,4 +1,123 @@
-<h3>Harvest List</h3>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harvesting Heroes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+        }
+        .container {
+            padding: 50px;
+        }
+        .cta {
+            background-color: #ff9800;
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .cta:hover {
+            background-color: #e68900;
+        }
+        .image-container {
+            margin-top: 30px;
+        }
+        .image-container img {
+            max-width: 80%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .caption {
+            font-size: 16px;
+            color: #555;
+            margin-top: 10px;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        label, input, select {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        button {
+            background: green;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Harvesting Heroes
+    </header>
+    <div class="container">
+        <h1>Grow Big. Harvest More. Inspire Others.</h1>
+        <p>Welcome to Harvesting Heroes, where we show how easy it is to grow food, no matter your space or resources.</p>
+        
+        <div class="image-container">
+            <img src="Malik & Nia harvesting onions.jpg" alt="Malik and Nia onion harvest">
+            <p class="caption">Malik and Nia show off their onion harvest. Join us in growing fresh, healthy food!</p>
+        </div>
+        
+        <a href="#" class="cta">Join the Movement</a>
+    </div>
+    
+    <div class="container">
+        <h2>Enter Harvest Data</h2>
+        <form id="harvestForm">
+            <label for="plantName">Plant Name:</label>
+            <select id="plantName" required>
+                <option value="">Select a plant</option>
+                <option value="Tomato">Tomato</option>
+                <option value="Cabbage">Cabbage</option>
+                <option value="Carrot">Carrot</option>
+                <option value="Lettuce">Lettuce</option>
+            </select>
+            
+            <label for="harvestDate">Harvest Date:</label>
+            <input type="date" id="harvestDate" required>
+            
+            <label for="weight">Weight Harvested (lbs):</label>
+            <input type="number" id="weight" step="0.1" required>
+            
+            <label for="location">Harvest Location:</label>
+            <select id="location" required>
+                <option value="Garden Bed A">Garden Bed A</option>
+                <option value="Garden Bed B">Garden Bed B</option>
+                <option value="Greenhouse">Greenhouse</option>
+                <option value="Backyard">Backyard</option>
+            </select>
+    
+            <button type="button" onclick="addHarvest()">Add to List</button>
+        </form>
+    
+        <h3>Harvest List</h3>
 <ul id="harvestList"></ul>
 
 <button type="button" onclick="submitAll()">Submit All</button>
@@ -99,3 +218,9 @@
         }
     }
 </script>
+
+</body>
+</html>
+
+
+
