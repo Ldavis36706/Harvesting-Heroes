@@ -70,6 +70,14 @@
             cursor: pointer;
             width: 100%;
         }
+        .edit-btn, .delete-btn {
+            margin-left: 10px;
+            cursor: pointer;
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
@@ -118,109 +126,53 @@
         </form>
     
         <h3>Harvest List</h3>
-<ul id="harvestList"></ul>
-
-<button type="button" onclick="submitAll()">Submit All</button>
-
-<script>
-    let harvestEntries = [];
-
-    function addHarvest() {
-        const plantName = document.getElementById('plantName').value;
-        const harvestDate = document.getElementById('harvestDate').value;
-        const weight = document.getElementById('weight').value;
-        const location = document.getElementById('location').value;
-        const password = document.getElementById('password').value;
-
-        if (!plantName || !harvestDate || !weight || !location || !password) {
-            alert("Please fill in all fields.");
-            return;
-        }
-
-        const entry = { plantName, harvestDate, weight, location, password };
-        harvestEntries.push(entry);
-
-        updateHarvestList();
-        
-        // Clear inputs
-        document.getElementById('plantName').value = "";
-        document.getElementById('harvestDate').value = "";
-        document.getElementById('weight').value = "";
-        document.getElementById('location').value = "";
-        document.getElementById('password').value = "";
-    }
-
-    function updateHarvestList() {
-        const list = document.getElementById('harvestList');
-        list.innerHTML = "";
-
-        harvestEntries.forEach((entry, index) => {
-            const listItem = document.createElement("li");
-            listItem.textContent = `${entry.plantName} - ${entry.weight} lbs on ${entry.harvestDate} (${entry.location}) `;
-
-            const editButton = document.createElement("button");
-            editButton.textContent = "✏ Edit";
-            editButton.style.marginLeft = "10px";
-            editButton.onclick = () => editEntry(index);
-
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "🗑 Delete";
-            deleteButton.style.marginLeft = "5px";
-            deleteButton.onclick = () => deleteEntry(index);
-
-            listItem.appendChild(editButton);
-            listItem.appendChild(deleteButton);
-            list.appendChild(listItem);
-        });
-    }
-
-    function editEntry(index) {
-        const entry = harvestEntries[index];
-        document.getElementById('plantName').value = entry.plantName;
-        document.getElementById('harvestDate').value = entry.harvestDate;
-        document.getElementById('weight').value = entry.weight;
-        document.getElementById('location').value = entry.location;
-        document.getElementById('password').value = entry.password;
-
-        harvestEntries.splice(index, 1); // Remove from list so it can be re-added after editing
-        updateHarvestList();
-    }
-
-    function deleteEntry(index) {
-        harvestEntries.splice(index, 1);
-        updateHarvestList();
-    }
-
-    async function submitAll() {
-        if (harvestEntries.length === 0) {
-            alert("No harvests to submit.");
-            return;
-        }
-
-        try {
-            const response = await fetch('https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvest', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ harvests: harvestEntries })
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                alert("✅ Submission successful!");
-                document.getElementById('harvestList').innerHTML = "";
-                harvestEntries = [];
-            } else {
-                alert("❌ Error: " + result.message);
+        <ul id="harvestList"></ul>
+    
+        <button type="button" onclick="submitAll()">Submit All</button>
+    </div>
+    
+    <script>
+        let harvestEntries = [];
+    
+        function addHarvest() {
+            const plantName = document.getElementById('plantName').value;
+            const harvestDate = document.getElementById('harvestDate').value;
+            const weight = document.getElementById('weight').value;
+            const location = document.getElementById('location').value;
+    
+            if (!plantName || !harvestDate || !weight || !location) {
+                alert("Please fill in all fields.");
+                return;
             }
-        } catch (error) {
-            alert("❌ Failed to submit. Please check your network or API Gateway.");
+    
+            const entry = { plantName, harvestDate, weight, location };
+            harvestEntries.push(entry);
+    
+            updateHarvestList();
         }
-    }
-</script>
-
+    
+        function updateHarvestList() {
+            const list = document.getElementById('harvestList');
+            list.innerHTML = "";
+    
+            harvestEntries.forEach((entry, index) => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${entry.plantName} - ${entry.weight} lbs on ${entry.harvestDate} (${entry.location}) `;
+    
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "🗑 Delete";
+                deleteButton.className = "delete-btn";
+                deleteButton.onclick = () => deleteEntry(index);
+    
+                listItem.appendChild(deleteButton);
+                list.appendChild(listItem);
+            });
+        }
+    
+        function deleteEntry(index) {
+            harvestEntries.splice(index, 1);
+            updateHarvestList();
+        }
+    </script>
 </body>
 </html>
-
-
-
