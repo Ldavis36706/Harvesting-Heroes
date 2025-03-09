@@ -173,6 +173,29 @@
             harvestEntries.splice(index, 1);
             updateHarvestList();
         }
+    
+        async function submitAll() {
+            if (harvestEntries.length === 0) {
+                alert("No harvests to submit.");
+                return;
+            }
+    
+            try {
+                const response = await fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvest", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ harvests: harvestEntries })
+                });
+    
+                const result = await response.json();
+                alert(result.message || "Submission successful!");
+    
+                document.getElementById("harvestList").innerHTML = "";
+                harvestEntries = [];
+            } catch (error) {
+                alert("❌ Error submitting data: " + error.message);
+            }
+        }
     </script>
 </body>
 </html>
