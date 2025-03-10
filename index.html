@@ -186,16 +186,16 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ harvests: harvestEntries })
                 });
+
+                if (!response.ok) throw new Error("API request failed");
     
                 const result = await response.json();
-                alert(result.message || "Submission successful!");
-    
-                document.getElementById("harvestList").innerHTML = "";
-                harvestEntries = [];
+                alert("✅ Submission Successful: " + result.message);
             } catch (error) {
                 alert("❌ Error submitting data: " + error.message);
             }
         }
+    
     </script>
 </body>
 </html>
