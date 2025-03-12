@@ -215,15 +215,25 @@
 
                 new Chart(document.getElementById("harvestTracker"), {
                     type: 'doughnut',
-                    data: { labels: ["Harvested", "Remaining"], datasets: [{ data: [totalWeight, goal - totalWeight], backgroundColor: ["#4CAF50", "#ddd"] }] },
-                    options: { responsive: true, maintainAspectRatio: false, cutout: "70%" }
+                    data: {
+                        labels: ["Harvested", "Remaining"],
+                        datasets: [{
+                            data: [totalWeight, goal - totalWeight],
+                            backgroundColor: ["#4CAF50", "#ddd"],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: "70%"
+                    }
                 });
             } catch (error) {
                 console.error("Error in updateTracker:", error);
             }
         }
 
-        window.onload = function() { updateTracker(); };
+        updateTracker();
     </script>
 </body>
 </html>
