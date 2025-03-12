@@ -195,6 +195,36 @@
                 alert("❌ Error submitting data: " + error.message);
             }
         }
+
+        async function updateTracker() {
+        const totalWeight = await fetchTotalHarvest();
+        const goal = 500;
+        const percentage = (totalWeight / goal) * 100;
+        let message = "Keep growing!";
+        if (totalWeight >= 500) message = "500 lbs achieved! You're a Harvesting Hero!";
+        else if (totalWeight >= 250) message = "Halfway there—keep going!";
+        else if (totalWeight >= 100) message = "Great job! You’ve grown 100 lbs!";
+        else if (totalWeight >= 50) message = "Awesome start! You’ve hit 50 lbs!";
+        document.getElementById("trackerMessage").innerText = message;
+        
+        new Chart(document.getElementById("harvestTracker"), {
+            type: 'doughnut',
+            data: {
+                labels: ["Harvested", "Remaining"],
+                datasets: [{
+                    data: [totalWeight, goal - totalWeight],
+                    backgroundColor: ["#4CAF50", "#ddd"],
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "70%"
+            }
+        });
+    }
+    updateTracker();
+</script>
     
     </script>
 </body>
