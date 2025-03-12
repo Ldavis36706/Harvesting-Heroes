@@ -195,8 +195,10 @@
                 alert("❌ Error submitting data: " + error.message);
             }
         }
-
-        async function updateTracker() {
+    
+    </script>
+    
+       async function updateTracker() {
         const totalWeight = await fetchTotalHarvest();
         const goal = 500;
         const percentage = (totalWeight / goal) * 100;
@@ -223,9 +225,8 @@
             }
         });
     }
+    
     updateTracker();
 </script>
-    
-    </script>
 </body>
 </html>
