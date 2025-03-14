@@ -223,7 +223,7 @@
 
         async function fetchTotalHarvest() {
             try {
-                const response = await fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/getTotalHarvest");
+                const response = await fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvest");
                 const data = await response.json();
                 return data.totalWeight || 0;
             } catch (error) {
