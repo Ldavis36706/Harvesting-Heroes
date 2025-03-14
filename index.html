@@ -97,7 +97,9 @@
     <div class="tracker-container">
         <h3>Harvest Tracker</h3>
         <p id="trackerMessage">Loading...</p>
-        <canvas id="harvestTracker" width="200" height="200"></canvas>
+        <div class="progress">
+            <div class="carrot" id="carrot"></div>
+        </div>
     </div>
 
     <div class="container">
@@ -213,27 +215,14 @@
 
                 document.getElementById("trackerMessage").innerText = message;
 
-                new Chart(document.getElementById("harvestTracker"), {
-                    type: 'doughnut',
-                    data: {
-                        labels: ["Harvested", "Remaining"],
-                        datasets: [{
-                            data: [totalWeight, goal - totalWeight],
-                            backgroundColor: ["#4CAF50", "#ddd"],
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutout: "70%"
-                    }
-                });
-            } catch (error) {
-                console.error("Error in updateTracker:", error);
-            }
+                let progress = Math.min((totalWeight / goal) * 100, 100);
+                document.getElementById("carrot").style.left = progress + "%";
+        } catch (error) {
+            console.error("Error in updateTracker:", error);
         }
+    }
 
-        updateTracker();
-    </script>
+    window.onload = function() { updateTracker(); };
+</script>
 </body>
 </html>
