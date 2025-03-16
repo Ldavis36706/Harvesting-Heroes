@@ -87,12 +87,12 @@
         let harvestEntries = [];
 
         function addHarvest() {
-            const plantName = document.getElementById('plantName').value;
-            const harvestDate = document.getElementById('harvestDate').value;
-            const weight = document.getElementById('weight').value;
-            const location = document.getElementById('location').value;
+            const plantName = document.getElementById('PlantName').value;
+            const harvestDate = document.getElementById('HarvestDate').value;
+            const weight = document.getElementById('WeightHarvested').value;
+            const location = document.getElementById('HarvestLocation').value;
 
-            if (!plantName || !harvestDate || !weight || !location) {
+            if (!PlantName || !HarvestDate || !WeightHarvested || !HarvestLocation) {
                 alert("Please fill in all fields.");
                 return;
             }
@@ -109,7 +109,7 @@
 
             harvestEntries.forEach((entry, index) => {
                 const listItem = document.createElement("li");
-                listItem.textContent = `${entry.plantName} - ${entry.weight} lbs on ${entry.harvestDate} (${entry.location}) `;
+                listItem.textContent = `${entry.PlantName} - ${entry.WeightHarvested} lbs on ${entry.HarvestDate} (${entry.HarvestLocation}) `;
 
                 const deleteButton = document.createElement("button");
                 deleteButton.textContent = "🗑 Delete";
