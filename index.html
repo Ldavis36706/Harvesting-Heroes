@@ -156,13 +156,13 @@
 
                 harvestEntries = [];
                 updateHarvestList();
-                updateTracker();
+                if (typeof updateTracker === 'function') { updateTracker(); }
             } catch (error) {
                 alert("❌ Error submitting data: " + error.message);
             }
         }
 
-        window.onload = function() { updateTracker(); };
+        window.onload = function() { if (typeof updateTracker === 'function') { updateTracker(); } };
     </script>
 </body>
 </html>
