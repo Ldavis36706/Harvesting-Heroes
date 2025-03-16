@@ -136,31 +136,34 @@
             updateHarvestList();
         }
 
-        async function submitAll() {
-            if (harvestEntries.length === 0) {
-                alert("No harvests to submit.");
-                return;
-            }
-
-            try {
-                const response = await fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ harvests: harvestEntries })
-                });
-
-                if (!response.ok) throw new Error("API request failed");
-
-                const result = await response.json();
-                alert("✅ Submission Successful: " + result.message);
-
-                harvestEntries = [];
-                updateHarvestList();
-                if (typeof updateTracker === 'function') { updateTracker(); }
-            } catch (error) {
-                alert("❌ Error submitting data: " + error.message);
-            }
+       async function submitAll() {
+        if (harvestEntries.length === 0) {
+            alert("No harvests to submit.");
+            return;
         }
+
+        console.log("Submitting data:", JSON.stringify({ harvests: harvestEntries })); // Debugging line
+
+        try {
+            const response = await fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ harvests: harvestEntries }) // Make sure this matches API expectations
+            });
+
+            if (!response.ok) throw new Error("API request failed");
+
+            const result = await response.json();
+            alert("✅ Submission Successful: " + result.message);
+
+            harvestEntries = [];
+            updateHarvestList();
+            if (typeof updateTracker === 'function') { updateTracker(); } // Ensure updateTracker exists before calling it
+        } catch (error) {
+            alert("❌ Error submitting data: " + error.message);
+        }
+    }
+
 
         window.onload = function() { if (typeof updateTracker === 'function') { updateTracker(); } };
     </script>
