@@ -63,6 +63,9 @@
                 <label for="harvestDate">Harvest Date:</label>
                 <input type="date" id="harvestDate" required>
 
+                <label for="harvestLocation">Harvest Location:</label>
+                <input type="text" id="harvestLocation" required>
+
                 <label for="weight">Weight Harvested (lbs):</label>
                 <input type="number" id="weight" step="0.1" required>
 
@@ -84,99 +87,61 @@
         <p>Grow Big. Harvest More. Inspire Others.</p>
     </div>
     
- <script>
-     function addHarvest() {
-         let plantName = document.getElementById("PlantName").value;
-         let harvestDate = document.getElementById("HarvestDate").value;
-         let harvestLocation = document.getElementById("HarvestLocation").value;
-         let weight = parseFloat(document.getElementById("HarvestedWeight").value);
-        
-         if (!PlantName || !HarvestDate || !HarvestLocation || isNaN(HarvestedWeight)) {
-            alert("Please fill out all fields before adding a harvest.");
-            return;
-         }
+    <script>
+        function addHarvest() {
+            let plantName = document.getElementById("plantName").value;
+            let harvestDate = document.getElementById("harvestDate").value;
+            let harvestLocation = document.getElementById("harvestLocation").value;
+            let weight = parseFloat(document.getElementById("weight").value);
+            
+            if (!plantName || !harvestDate || !harvestLocation || isNaN(weight)) {
+                alert("Please fill out all fields before adding a harvest.");
+                return;
+            }
 
-         let listItem = document.createElement("li");
-         listItem.textContent = `${harvestDate} - ${plantName} (${harvestLocation}): ${weight} lbs`;
-        
-         let deleteButton = document.createElement("button");
-         deleteButton.textContent = "Delete";
-         deleteButton.onclick = function() { listItem.remove(); };
-        
-         listItem.appendChild(deleteButton);
-         document.getElementById("harvestList").appendChild(listItem);
-         document.getElementById("harvestForm").reset();
-     }
-
-     async function submitHarvest() {
-         let plantName = document.getElementById("PlantName").value;
-         let harvestDate = document.getElementById("HarvestDate").value;
-         let harvestLocation = document.getElementById("HarvestLocation").value;
-         let weight = parseFloat(document.getElementById("HarvestedWeight").value);
-        
-         if (!PlantName || !HarvestDate || !HarvestLocation || isNaN(HarvestedWeight)) {
-            alert("Please fill out all fields before submitting.");
-            return;
-         }
-
-         let payload = {
-             PlantName: plantName,
-             HarvestDate: harvestDate,
-             HarvestLocation: harvestLocation,
-             WeightHarvested: weight
-         };
-
-         try {
-            let response = await fetch("https://your-api-gateway-url/harvest-entry", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-            let result = await response.json();
-            alert("✅ Submission Successful! Entry added to database.");
-            location.reload();
-        } catch (error) {
-            alert("❌ Submission Failed. Please try again.");
+            let listItem = document.createElement("li");
+            listItem.textContent = `${harvestDate} - ${plantName} (${harvestLocation}): ${weight} lbs`;
+            
+            let deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            deleteButton.onclick = function() { listItem.remove(); };
+            
+            listItem.appendChild(deleteButton);
+            document.getElementById("harvestList").appendChild(listItem);
+            document.getElementById("harvestForm").reset();
         }
-    }
-  
 
+        async function submitHarvest() {
+            let plantName = document.getElementById("plantName").value;
+            let harvestDate = document.getElementById("harvestDate").value;
+            let harvestLocation = document.getElementById("harvestLocation").value;
+            let weight = parseFloat(document.getElementById("weight").value);
+            
+            if (!plantName || !harvestDate || !harvestLocation || isNaN(weight)) {
+                alert("Please fill out all fields before submitting.");
+                return;
+            }
 
-    async function fetchTotalHarvest() {
+            let payload = {
+                PlantName: plantName,
+                HarvestDate: harvestDate,
+                HarvestLocation: harvestLocation,
+                WeightHarvested: weight
+            };
+
             try {
-                const response = await fetch("https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvestWeight");
-                const data = await response.json();
-                return data.totalWeight || 0;
+                let response = await fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                let result = await response.json();
+                alert("✅ Submission Successful! Entry added to database.");
+                location.reload();
             } catch (error) {
-                console.error("Error fetching total harvest:", error);
-                return 0;
+                alert("❌ Submission Failed. Please try again.");
             }
         }
-
-    async function updateTracker() {
-            try {
-                const totalWeight = await fetchTotalHarvest();
-                const goal = 500;
-                let message = "Keep growing!";
-                if (totalWeight >= 500) message = "500 lbs achieved! You're a Harvesting Hero!";
-                else if (totalWeight >= 250) message = "Halfway there—keep going!";
-                else if (totalWeight >= 100) message = "Great job! You’ve grown 100 lbs!";
-                else if (totalWeight >= 50) message = "Awesome start! You’ve hit 50 lbs!";
-                else if (totalWeight >= 25) message = "Awesome start! You’ve hit 25 lbs!";
-                else if (totalWeight >= 20) message = "Awesome start! You’ve hit 20 lbs!";
-                else if (totalWeight >= 15) message = "Awesome start! You’ve hit 15 lbs!";
-                else if (totalWeight >= 10) message = "Awesome start! You’ve hit 10 lbs!";
-                else if (totalWeight >= 5) message = "Awesome start! You’ve hit 5 lbs!";
-
-                document.getElementById("trackerMessage").innerText = message;
-
-                let progress = Math.min((totalWeight / goal) * 100, 100);
-                document.getElementById("carrot").style.left = progress + "1%";
-        } catch (error) {
-            console.error("Error in updateTracker:", error);
-        }
-    }
-
-</script>
+    </script>
 </body>
 </html>
