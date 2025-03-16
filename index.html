@@ -64,7 +64,13 @@
                 <input type="date" id="harvestDate" required>
 
                 <label for="harvestLocation">Harvest Location:</label>
-                <input type="text" id="harvestLocation" required>
+                <select id="harvestLocation" required>
+                    <option value="">Select a location</option>
+                    <option value="Raised Bed 1">Raised Bed 1</option>
+                    <option value="Raised Bed 2">Raised Bed 2</option>
+                    <option value="Greenhouse">Greenhouse</option>
+                    <option value="Backyard Garden">Backyard Garden</option>
+                </select>
 
                 <label for="weight">Weight Harvested (lbs):</label>
                 <input type="number" id="weight" step="0.1" required>
