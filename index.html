@@ -84,3 +84,85 @@
     </div>
 </body>
 </html>
+
+ <script>
+        let harvestEntries = [];
+
+        function addHarvest() {
+            const plantName = document.getElementById('plantName').value;
+            const harvestDate = document.getElementById('harvestDate').value;
+            const weight = document.getElementById('weight').value;
+            const location = document.getElementById('location').value;
+
+            if (!plantName || !harvestDate || !weight || !location) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const entry = { plantName, harvestDate, weight, location };
+            harvestEntries.push(entry);
+
+            updateHarvestList();
+        }
+
+        function updateHarvestList() {
+            const list = document.getElementById('harvestList');
+            list.innerHTML = "";
+
+            harvestEntries.forEach((entry, index) => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${entry.plantName} - ${entry.weight} lbs on ${entry.harvestDate} (${entry.location}) `;
+
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "🗑 Delete";
+                deleteButton.className = "delete-btn";
+                deleteButton.onclick = () => deleteEntry(index);
+
+                listItem.appendChild(deleteButton);
+                list.appendChild(listItem);
+            });
+        }
+
+        function deleteEntry(index) {
+            harvestEntries.splice(index, 1);
+            updateHarvestList();
+        }
+
+        async function fetchTotalHarvest() {
+            try {
+                const response = await fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/getTotalHarvest");
+                const data = await response.json();
+                return data.totalWeight || 0;
+            } catch (error) {
+                console.error("Error fetching total harvest:", error);
+                return 0;
+            }
+        }
+
+        async function updateTracker() {
+            try {
+                const totalWeight = await fetchTotalHarvest();
+                const goal = 500;
+                let message = "Keep growing!";
+                if (totalWeight >= 500) message = "500 lbs achieved! You're a Harvesting Hero!";
+                else if (totalWeight >= 250) message = "Halfway there—keep going!";
+                else if (totalWeight >= 100) message = "Great job! You’ve grown 100 lbs!";
+                else if (totalWeight >= 50) message = "Awesome start! You’ve hit 50 lbs!";
+
+                document.getElementById("trackerMessage").innerText = message;
+
+                new Chart(document.getElementById("harvestTracker"), {
+                    type: 'doughnut',
+                    data: { labels: ["Harvested", "Remaining"], datasets: [{ data: [totalWeight, goal - totalWeight], backgroundColor: ["#4CAF50", "#ddd"] }] },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: "70%" }
+                });
+            } catch (error) {
+                console.error("Error in updateTracker:", error);
+            }
+        }
+
+        window.onload = function() { updateTracker(); };
+    </script>
+</body>
+</html>
+
