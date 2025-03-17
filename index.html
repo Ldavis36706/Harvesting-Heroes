@@ -6,6 +6,40 @@
     <link rel="icon" href="bountifulharvest.jpeg">
     <link rel="stylesheet" type="text/css" href="main.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Lightbox Styles */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+        .lightbox.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -29,16 +63,22 @@
         <h2>Harvests</h2>
         <table>
             <tr>
-                <td><img src="basketharvest.jpeg"><p>Bountiful Harvest</p></td>
-                <td><img src="adamwatermelon.jpeg"><p>Adam Harvesting a Watermelon</p></td>
-                <td><img src="hugewatermelon.jpeg"><p>Kesha's Huge Watermelon </p></td>
+                <td><img src="basketharvest.jpeg" onclick="openLightbox(this.src)"><p>Bountiful Harvest</p></td>
+                <td><img src="adamwatermelon.jpeg" onclick="openLightbox(this.src)"><p>Adam Harvesting a Watermelon</p></td>
+                <td><img src="hugewatermelon.jpeg" onclick="openLightbox(this.src)"><p>Kesha's Huge Watermelon </p></td>
             </tr>
             <tr>
-                <td><img src="shellingpeas.jpeg"><p>Shelling Peas</p></td>
-                <td><img src="Malik & Nia harvesting onions.jpg"><p>Malik & Nia Onion Harvest</p></td>
-                <td><img src="peaches.jpeg"><p>Peach Harvest</p></td>
+                <td><img src="shellingpeas.jpeg" onclick="openLightbox(this.src)"><p>Shelling Peas</p></td>
+                <td><img src="Malik & Nia harvesting onions.jpg" onclick="openLightbox(this.src)"><p>Malik & Nia Onion Harvest</p></td>
+                <td><img src="peaches.jpeg" onclick="openLightbox(this.src)"><p>Peach Harvest</p></td>
             </tr>
         </table>
+    </div>
+
+    <!-- Lightbox Container -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img">
     </div>
 
     <!-- Grow Goal section with Harvest Tracker -->
@@ -87,62 +127,15 @@
         </div>
     </div>
 
-    <div class="about-us" id="about-us-link">
-        <h2>About Us</h2>
-        <p>Welcome to Harvesting Heroes, where we show how easy it is to grow food, no matter your space or resources. Follow along on this exciting journey with us.</p>
-    </div>
-
-    <div class="services" id="our-mission-link">
-        <h2>Our Mission</h2>
-        <p>Grow Big. Harvest More. Inspire Others.</p>
-    </div>
-    
     <script>
-        async function fetchTotalHarvest() {
-            try {
-                const response = await fetch("https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvestWeight");
-                const data = await response.json();
-                return data.TotalHarvestWeight || 0;
-            } catch (error) {
-                console.error("Error fetching total harvest:", error);
-                return 0;
-            }
+        function openLightbox(imageSrc) {
+            document.getElementById("lightbox-img").src = imageSrc;
+            document.getElementById("lightbox").classList.add("show");
         }
 
-        async function updateTracker() {
-            try {
-                const totalWeight = await fetchTotalHarvest();
-                document.getElementById("trackerMessage").innerText = `Total Produce Harvested: ${totalWeight} lbs`;
-                
-                const goal = 500;
-                const remainingWeight = Math.max(goal - totalWeight, 0);
-                
-                const ctx = document.getElementById("harvestChart").getContext("2d");
-                new Chart(ctx, {
-                    type: "doughnut",
-                    data: {
-                        labels: ["Harvested", "Remaining"],
-                        datasets: [{
-                            data: [totalWeight, remainingWeight],
-                            backgroundColor: ["#4CAF50", "#D3D3D3"]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: "bottom"
-                            }
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error("Error updating tracker:", error);
-            }
+        function closeLightbox() {
+            document.getElementById("lightbox").classList.remove("show");
         }
-
-        window.onload = function() { updateTracker(); };
     </script>
 </body>
 </html>
