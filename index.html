@@ -97,12 +97,22 @@
             <form id="harvestForm">
                 <label for="plantName">Plant Name:</label>
                 <select id="plantName" required>
-                    <option value="">Select a plant</option>
-                    <option value="Tomato">Tomato</option>
-                    <option value="Cabbage">Cabbage</option>
-                    <option value="Carrot">Carrot</option>
-                    <option value="Lettuce">Lettuce</option>
-                </select>
+    <option value="">Select a plant</option>
+    <script>
+        const plantNames = [
+            "Cantaloupe", "Crookneck Squash", "Greek Pepperoncini Pepper", "Sunflower Mammoth Grey", 
+            "Echinacea", "Sunflower Lemon Queen", "Straightneck Squash", "Okra Baby Bubba Hybrid"
+        ];
+        
+        const plantSelect = document.getElementById("plantName");
+        plantNames.forEach(name => {
+            let option = document.createElement("option");
+            option.value = name;
+            option.textContent = name;
+            plantSelect.appendChild(option);
+        });
+    </script>
+</select>
 
                 <label for="harvestDate">Harvest Date:</label>
                 <input type="date" id="harvestDate" required>
