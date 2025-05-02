@@ -96,36 +96,35 @@
                 <h3>Harvest Tracker</h3>
                 <p id="trackerMessage">Loading...</p>
                 <div style="width: 300px; height: 300px; display: flex; justify-content: center; align-items: center;">
-    <canvas id="harvestChart"></canvas>
-</div>
+                    <canvas id="harvestChart"></canvas>
+                </div>
             </div>
             <h2>Enter Harvest Data</h2>
             <form id="harvestForm">
                 <label for="plantName">Plant Name:</label>
                 <select id="plantName" required>
-    <option value="">Select a plant</option>
-    <script>
-        const plantNames = [
-            "Cantaloupe", "Crookneck Squash", "Greek Pepperoncini Pepper", "Sunflower Mammoth Grey", 
-            "Echinacea", "Sunflower Lemon Queen", "Straightneck Squash", "Okra Baby Bubba Hybrid",
-            "Cucumber Muncher variety", "Cucumber Picklebush variety", "Basil", 
-            "Tomato Chadwick Cherry", "Sunflower Autumn Beauty", "Bellpepper", "Sweet Pea Oregon Sugar Pod", "Tomato Brandywine",
-            "Tomato Brandywine Pink", "Green Bean", "Zuchini", "Hollyhock Flowers", "Watermelon Sugar Baby", 
-            "Watermelon Crimson Sweet", "Watermelon Jubilee", "Nasturtium", "Spinach", "Cabbage", "Collards", "Broccoli", 
-            "Carolina Reaper Pepper", "Habanero Pepper", "Cauliflower", "Potatoes", "Strawberry", "Asparagus",
-            "Blackberries", "Pumpkin", "Sugar Cane", "Thyme", "Basil", "Rosemary", "Sweet Potatoe", "Turnips",
-            "Beets", "Scallion", "Onion Vidala", "Onion Red", "Rose", "Daffoldil",
-        ];
-        
-        const plantSelect = document.getElementById("plantName");
-        plantNames.forEach(name => {
-            let option = document.createElement("option");
-            option.value = name;
-            option.textContent = name;
-            plantSelect.appendChild(option);
-        });
-    </script>
-</select>
+                    <option value="">Select a plant</option>
+                    <script>
+                        const plantNames = [
+                            "Cantaloupe", "Crookneck Squash", "Greek Pepperoncini Pepper", "Sunflower Mammoth Grey", 
+                            "Echinacea", "Sunflower Lemon Queen", "Straightneck Squash", "Okra Baby Bubba Hybrid",
+                            "Cucumber Muncher variety", "Cucumber Picklebush variety", "Basil", 
+                            "Tomato Chadwick Cherry", "Sunflower Autumn Beauty", "Bellpepper", "Sweet Pea Oregon Sugar Pod", "Tomato Brandywine",
+                            "Tomato Brandywine Pink", "Green Bean", "Zuchini", "Hollyhock Flowers", "Watermelon Sugar Baby", 
+                            "Watermelon Crimson Sweet", "Watermelon Jubilee", "Nasturtium", "Spinach", "Cabbage", "Collards", "Broccoli", 
+                            "Carolina Reaper Pepper", "Habanero Pepper", "Cauliflower", "Potatoes", "Strawberry", "Asparagus",
+                            "Blackberries", "Pumpkin", "Sugar Cane", "Thyme", "Basil", "Rosemary", "Sweet Potatoe", "Turnips",
+                            "Beets", "Scallion", "Onion Vidala", "Onion Red", "Rose", "Daffoldil",
+                        ];
+                        const plantSelect = document.getElementById("plantName");
+                        plantNames.forEach(name => {
+                            let option = document.createElement("option");
+                            option.value = name;
+                            option.textContent = name;
+                            plantSelect.appendChild(option);
+                        });
+                    </script>
+                </select>
 
                 <label for="harvestDate">Harvest Date:</label>
                 <input type="date" id="harvestDate" required>
@@ -160,32 +159,33 @@
             document.getElementById("lightbox").classList.remove("show");
         }
     </script>
+
     <script>
-    function addHarvest() {
-        let plantName = document.getElementById("plantName").value;
-        let harvestDate = document.getElementById("harvestDate").value;
-        let location = document.getElementById("location").value;
-        let weight = document.getElementById("weight").value;
+        function addHarvest() {
+            let plantName = document.getElementById("plantName").value;
+            let harvestDate = document.getElementById("harvestDate").value;
+            let location = document.getElementById("location").value;
+            let weight = document.getElementById("weight").value;
 
-        if (!plantName || !harvestDate || !location || !weight) {
-            alert("Please fill in all fields.");
-            return;
+            if (!plantName || !harvestDate || !location || !weight) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            let listItem = document.createElement("li");
+            listItem.textContent = `${harvestDate} - ${plantName} (${location}): ${weight} lbs`;
+
+            let deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            deleteButton.onclick = function() { listItem.remove(); };
+
+            listItem.appendChild(deleteButton);
+            document.getElementById("harvestList").appendChild(listItem);
+
+            document.getElementById("harvestForm").reset();
         }
-
-        let listItem = document.createElement("li");
-        listItem.textContent = `${harvestDate} - ${plantName} (${location}): ${weight} lbs`;
-
-        let deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
-        deleteButton.onclick = function() { listItem.remove(); };
-
-        listItem.appendChild(deleteButton);
-        document.getElementById("harvestList").appendChild(listItem);
-
-        // Reset form after adding to list
-        document.getElementById("harvestForm").reset();
-    }
     </script>
+
     <script>
         async function fetchTotalHarvest() {
             try {
@@ -232,7 +232,8 @@
         }
 
         window.onload = function() { updateTracker(); };
-    <script src="harvest.js"></script>     
     </script>
+
+    <script src="harvest.js"></script>
 </body>
 </html>
