@@ -61,13 +61,38 @@ function addHarvest() {
     updateTracker();
 }
 
-function submitAll() {
-    console.log("Submitting to database:", harvestData);
-    alert("Harvest data submitted successfully!");
-    harvestData = [];
-    harvestList.innerHTML = '';
-    updateTracker();
+async function submitAll() {
+    if (harvestData.length === 0) {
+        alert("No data to submit.");
+        return;
+    }
+
+    try {
+        const response = await fetch("https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/SubmitHarvest", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ items: harvestData })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server responded with status ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("Submission result:", result);
+
+        alert("Harvest data submitted successfully!");
+        harvestData = [];
+        harvestList.innerHTML = '';
+        updateTracker();
+    } catch (error) {
+        console.error("Error submitting harvest data:", error);
+        alert("Failed to submit harvest data. Please try again.");
+    }
 }
+
 
 // Lightbox Script
 function openLightbox(src) {
