@@ -1,43 +1,45 @@
-    // Harvest Tracker Script
 let harvestData = [];
-let totalWeight = 0;
+const goal = 500;
 
-const chartElement = document.getElementById("harvestChart");
-const trackerMessage = document.getElementById("trackerMessage");
-const harvestList = document.getElementById("harvestList");
+async function fetchTotalHarvest() {
+    try {
+        const response = await fetch("https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvestWeight");
+        const data = await response.json();
+        return data.TotalHarvestWeight || 0;
+    } catch (error) {
+        console.error("Error fetching total harvest:", error);
+        return 0;
+    }
+}
 
-let chart = new Chart(chartElement, {
-    type: 'doughnut',
-    data: {
-        labels: ['Harvested', 'Remaining'],
-        datasets: [{
-            data: [0, 500],
-            backgroundColor: ['#4CAF50', '#e0e0e0']
-        }]
-    },
-    options: {
-        responsive: true,
-        cutout: '70%',
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        return `${context.label}: ${context.raw} lbs`;
-                    }
+async function updateTracker() {
+    try {
+        const totalWeight = await fetchTotalHarvest();
+        document.getElementById("trackerMessage").innerText = `Total Produce Harvested: ${totalWeight} lbs`;
+
+        const remainingWeight = Math.max(goal - totalWeight, 0);
+        const ctx = document.getElementById("harvestChart").getContext("2d");
+
+        new Chart(ctx, {
+            type: "doughnut",
+            data: {
+                labels: ["Harvested", "Remaining"],
+                datasets: [{
+                    data: [totalWeight, remainingWeight],
+                    backgroundColor: ["#4CAF50", "#D3D3D3"]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: "bottom" }
                 }
             }
-        }
+        });
+    } catch (error) {
+        console.error("Error updating tracker:", error);
     }
-});
-
-function updateTracker() {
-    let harvested = harvestData.reduce((sum, item) => sum + item.weight, 0);
-    let remaining = Math.max(500 - harvested, 0);
-
-    chart.data.datasets[0].data = [harvested, remaining];
-    chart.update();
-
-    trackerMessage.textContent = `Total Harvested: ${harvested.toFixed(1)} lbs out of 500 lbs goal.`;
 }
 
 function addHarvest() {
@@ -56,26 +58,36 @@ function addHarvest() {
 
     const listItem = document.createElement("li");
     listItem.textContent = `${plantName} - ${weight} lbs on ${harvestDate} at ${location}`;
-    harvestList.appendChild(listItem);
-
-    updateTracker();
+    document.getElementById("harvestList").appendChild(listItem);
 }
 
-function submitAll() {
-    console.log("Submitting to database:", harvestData);
-    alert("Harvest data submitted successfully!");
-    harvestData = [];
-    harvestList.innerHTML = '';
-    updateTracker();
+async function submitAll() {
+    if (!harvestData.length) {
+        alert("No data to submit.");
+        return;
+    }
+
+    try {
+        const response = await fetch("https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/SubmitHarvestData", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ entries: harvestData })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.statusText}`);
+        }
+
+        alert("Harvest data submitted successfully!");
+        harvestData = [];
+        document.getElementById("harvestList").innerHTML = "";
+        updateTracker();
+    } catch (error) {
+        console.error("Submission error:", error);
+        alert("Failed to submit data. Please try again.");
+    }
 }
 
-// Lightbox Script
-function openLightbox(src) {
-    document.getElementById("lightbox-img").src = src;
-    document.getElementById("lightbox").classList.add("show");
-}
-
-function closeLightbox() {
-    document.getElementById("lightbox").classList.remove("show");
-}
-
+window.onload = updateTracker;
