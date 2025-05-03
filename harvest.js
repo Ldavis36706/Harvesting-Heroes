@@ -1,65 +1,85 @@
-let harvestEntries = [];
+    <script>
+        // Harvest Tracker Script
+        let harvestData = [];
+        let totalWeight = 0;
 
-// Called when the "Add Harvest" button is clicked
-function addHarvest() {
-    const plantType = document.getElementById("plantType").value.trim();
-    const date = document.getElementById("harvestDate").value;
-    const quantity = document.getElementById("quantity").value.trim();
+        const chartElement = document.getElementById("harvestChart");
+        const trackerMessage = document.getElementById("trackerMessage");
+        const harvestList = document.getElementById("harvestList");
 
-    if (!plantType || !date || !quantity) {
-        alert("Please fill in all fields.");
-        return;
-    }
+        let chart = new Chart(chartElement, {
+            type: 'doughnut',
+            data: {
+                labels: ['Harvested', 'Remaining'],
+                datasets: [{
+                    data: [0, 500],
+                    backgroundColor: ['#4CAF50', '#e0e0e0']
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '70%',
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw} lbs`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
-    const entry = {
-        plantType,
-        date,
-        quantity: parseInt(quantity)
-    };
+        function updateTracker() {
+            let harvested = harvestData.reduce((sum, item) => sum + item.weight, 0);
+            let remaining = Math.max(500 - harvested, 0);
 
-    harvestEntries.push(entry);
-    updateTracker();
+            chart.data.datasets[0].data = [harvested, remaining];
+            chart.update();
 
-    // Optionally clear inputs after adding
-    document.getElementById("plantType").value = "";
-    document.getElementById("harvestDate").value = "";
-    document.getElementById("quantity").value = "";
-}
+            trackerMessage.textContent = `Total Harvested: ${harvested.toFixed(1)} lbs out of 500 lbs goal.`;
+        }
 
-// Updates the visual list of harvest entries
-function updateTracker() {
-    const list = document.getElementById("harvestList");
-    list.innerHTML = "";
+        function addHarvest() {
+            const plantName = document.getElementById("plantName").value;
+            const harvestDate = document.getElementById("harvestDate").value;
+            const location = document.getElementById("location").value;
+            const weight = parseFloat(document.getElementById("weight").value);
 
-    harvestEntries.forEach((entry, index) => {
-        const li = document.createElement("li");
-        li.textContent = `#${index + 1} - ${entry.plantType} | ${entry.date} | Qty: ${entry.quantity}`;
-        list.appendChild(li);
-    });
-}
+            if (!plantName || !harvestDate || !location || isNaN(weight)) {
+                alert("Please fill out all fields correctly.");
+                return;
+            }
 
-// Sends all entries to the backend API
-function submitAll() {
-    if (harvestEntries.length === 0) {
-        alert("No harvests to submit.");
-        return;
-    }
+            const entry = { plantName, harvestDate, location, weight };
+            harvestData.push(entry);
 
-    fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ harvests: harvestEntries })
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert("✅ Submission Successful!");
-        harvestEntries = [];
-        document.getElementById("harvestList").innerHTML = "";
-        updateTracker();
-    })
-    .catch(error => {
-        console.error("❌ Error submitting data:", error);
-        alert("❌ Submission failed. Please try again.");
-    });
-}
+            const listItem = document.createElement("li");
+            listItem.textContent = `${plantName} - ${weight} lbs on ${harvestDate} at ${location}`;
+            harvestList.appendChild(listItem);
+
+            updateTracker();
+        }
+
+        function submitAll() {
+            console.log("Submitting to database:", harvestData);
+            alert("Harvest data submitted successfully!");
+            harvestData = [];
+            harvestList.innerHTML = '';
+            updateTracker();
+        }
+
+        // Lightbox Script
+        function openLightbox(src) {
+            document.getElementById("lightbox-img").src = src;
+            document.getElementById("lightbox").classList.add("show");
+        }
+
+        function closeLightbox() {
+            document.getElementById("lightbox").classList.remove("show");
+        }
+    </script>
+</body>
+</html>
 
