@@ -68,7 +68,7 @@ async function submitAll() {
     }
 
     try {
-        const response = await fetch("https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/SubmitHarvestData", {
+        const response = await fetch(https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
