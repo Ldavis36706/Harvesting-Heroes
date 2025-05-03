@@ -243,24 +243,15 @@ async function submitAll() {
         }
 
  
-         async function updateTracker() {
-            try {
-                const totalWeight = await fetchTotalHarvest();
-                const goal = 500;
-                let message = "Keep growing!";
-                if (totalWeight >= 500) message = "500 lbs achieved! You're a Harvesting Hero!";
-                else if (totalWeight >= 250) message = "Halfway there—keep going!";
-                else if (totalWeight >= 100) message = "Great job! You’ve grown 100 lbs!";
-                else if (totalWeight >= 50) message = "Awesome start! You’ve hit 50 lbs!";
+         function updateTracker() {
+    let harvested = harvestData.reduce((sum, item) => sum + item.weight, 0);
+    let remaining = Math.max(500 - harvested, 0);
 
-                document.getElementById("trackerMessage").innerText = message;
+    chart.data.datasets[0].data = [harvested, remaining];
+    chart.update();
 
-                let progress = Math.min((totalWeight / goal) * 100, 100);
-                document.getElementById("carrot").style.left = progress + "%";
-        } catch (error) {
-            console.error("Error in updateTracker:", error);
-        }
-    }
+    trackerMessage.textContent = `Total Harvested: ${harvested.toFixed(1)} lbs out of 500 lbs goal.`;
+}
  
          window.onload = function() { updateTracker(); };     
   </script>
