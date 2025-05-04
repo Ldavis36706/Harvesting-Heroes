@@ -1,6 +1,45 @@
 let harvestData = [];
 const goal = 500;
 
+document.getElementById("harvestForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const plantName = document.getElementById("plantName").value;
+    const harvestDate = document.getElementById("harvestDate").value;
+    const location = document.getElementById("location").value;
+    const weight = document.getElementById("weight").value;
+
+    const data = {
+        plantName,
+        harvestDate,
+        location,
+        weight: parseFloat(weight)
+    };
+
+    try {
+        const response = await fetch("https://YOUR_API_GATEWAY_ENDPOINT/harvest", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            console.log("Data submitted successfully!");
+            alert("Harvest entry added!");
+            document.getElementById("harvestForm").reset();
+        } else {
+            console.error("Failed to submit data.");
+            alert("Failed to submit data. Please try again.");
+        }
+    } catch (error) {
+        console.error("Error submitting data:", error);
+        alert("An error occurred. Please try again.");
+    }
+});
+
+
 async function fetchTotalHarvest() {
     try {
         const response = await fetch("https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvestWeight");
