@@ -28,14 +28,14 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch('https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvestWeight')
         .then(response => response.json())
         .then(data => {
-            let totalWeight = 0;
-            if (Array.isArray(data)) {
-                data.forEach(entry => {
-                    if (entry.weight) {
-                        totalWeight += Number(entry.weight);
-                    }
-                });
-            }
+            const totalWeight = data.TotalHarvestWeight;
+            updateHarvestChart(totalWeight);
+            document.getElementById("trackerMessage").textContent = `Total Harvested: ${totalWeight} lbs`;
+  })
+  .catch(error => {
+      console.error("Error fetching total harvest weight:", error);
+  });
+                
 
             updateHarvestChart(totalWeight);
             document.getElementById('trackerMessage').innerText = `We have harvested ${totalWeight} lbs so far!`;
