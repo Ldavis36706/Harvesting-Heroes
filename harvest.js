@@ -28,7 +28,7 @@ function updateChart(newHarvestWeight) {
 
 async function saveToDynamoDB(entry) {
   try {
-    const response = await fetch('https://your-api-url.amazonaws.com/prod/submitHarvest', {
+    const response = await fetch('https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler', {
       method: 'POST',
       body: JSON.stringify(entry),
       headers: {
