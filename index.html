@@ -1,168 +1,161 @@
 <!DOCTYPE html>
- <html>
- 
- <head>
-     <title>Harvesting Heroes</title>
-     <link rel="icon" href="bountifulharvest.jpeg">
-     <link rel="stylesheet" type="text/css" href="main.css">
-     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-     <style>
-         /* Lightbox Styles */
-         .lightbox {
-             position: fixed;
-             top: 0;
-             left: 0;
-             width: 100%;
-             height: 100%;
-             background: rgba(0, 0, 0, 0.8);
-             display: flex;
-             justify-content: center;
-             align-items: center;
-             visibility: hidden;
-             opacity: 0;
-             transition: opacity 0.3s ease;
-         }
-         .lightbox img {
-             max-width: 90%;
-             max-height: 90%;
-             border-radius: 10px;
-         }
-         .lightbox.show {
-             visibility: visible;
-             opacity: 1;
-         }
-         .lightbox-close {
-             position: absolute;
-             top: 20px;
-             right: 30px;
-             font-size: 30px;
-             color: white;
-             cursor: pointer;
-         }
-     </style>
- </head>
- 
- <body>
-     <div id="header">
-         <table>
-             <tr>
+<html>
+<head>
+    <title>Harvesting Heroes</title>
+    <link rel="icon" href="bountifulharvest.jpeg">
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Lightbox Styles */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+        .lightbox.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <table>
+            <tr>
                 <td><img src="basketharvest.jpeg"></td>
-                 <td>Harvesting Heroes</td>
-             </tr>
-         </table>
-     </div>
-     <div class="nav-menu">
-         <a href="#harvests-link">Harvests</a>
-         <a href="#our-mission-link">Our Mission</a>
-         <a href="#grow-goal-link">Grow Goal</a>
-         <a href="#about-us-link">About Us</a>
-     </div>
- 
-     <!-- Harvests section -->
-     <div class="products" id="harvests-link">
-         <h2>Harvests</h2>
-         <table>
-             <tr>
-                 <td>
-                     <video width="400" height="300" controls>
-                         <source src="https://d2g0hnizs6unkc.cloudfront.net/Malik%20at%20table%20harvest.mp4">
-                         Your browser does not support the video tag.  
-                     </video>
-                      <button onclick="document.querySelector('video').requestFullscreen()">Fullscreen</button>
-                     <button onclick="document.querySelector('video').requestFullscreen()">Fullscreen</button>
-                 </td>
-                 <td><img src="adamwatermelon.jpeg" onclick="openLightbox(this.src)"><p>Adam Harvesting a Watermelon</p></td>
-                 <td><img src="hugewatermelon.jpeg" onclick="openLightbox(this.src)"><p>Kesha's Huge Watermelon </p></td>
-             </tr>
-             <tr>
-                 <td><img src="shellingpeas.jpeg" onclick="openLightbox(this.src)"><p>Shelling Peas</p></td>
-                 <td><img src="Malik & Nia harvesting onions.jpg" onclick="openLightbox(this.src)"><p>Malik & Nia Onion Harvest</p></td>
-                 <td><img src="peaches.jpeg" onclick="openLightbox(this.src)"><p>Peach Harvest</p></td>
-             </tr>
-         </table>
-     </div>
- 
-     <!-- Lightbox Container -->
-     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-         <span class="lightbox-close">&times;</span>
-         <img id="lightbox-img">
-     </div>
- 
-     <!-- Grow Goal section with Harvest Tracker -->
-     <div class="sidebar">
-         <div class="location" id="grow-goal-link">
-             <h2>Grow Goal</h2>
-             <p>Our goal is to grow 500 lbs of food this season!</p>
-             <div class="tracker-container">
-                 <h3>Harvest Tracker</h3>
-                 <p id="trackerMessage">Loading...</p>
-                 <div style="width: 300px; height: 300px; display: flex; justify-content: center; align-items: center;">
-      <canvas id="harvestChart"></canvas>
- </div>
-             </div>
-             <h2>Enter Harvest Data</h2>
-             <form id="harvestForm">
-                 <label for="plantName">Plant Name:</label>
-                 <select id="plantName" required>
-     <option value="">Select a plant</option>
-     <script>
-         const plantNames = [
-             "Cantaloupe", "Crookneck Squash", "Greek Pepperoncini Pepper", "Sunflower Mammoth Grey", 
-             "Echinacea", "Sunflower Lemon Queen", "Straightneck Squash", "Okra Baby Bubba Hybrid",
-             "Cucumber Muncher variety", "Cucumber Picklebush variety", "Basil", 
-             "Tomato Chadwick Cherry", "Sunflower Autumn Beauty", "Bellpepper", "Sweet Pea Oregon Sugar Pod", "Tomato Brandywine",
-             "Tomato Brandywine Pink", "Green Bean", "Zuchini", "Hollyhock Flowers", "Watermelon Sugar Baby", 
-             "Watermelon Crimson Sweet", "Watermelon Jubilee", "Nasturtium", "Spinach", "Cabbage", "Collards", "Broccoli", 
-             "Carolina Reaper Pepper", "Habanero Pepper", "Cauliflower", "Potatoes", "Strawberry", "Asparagus",
-             "Blackberries", "Pumpkin", "Sugar Cane", "Thyme", "Basil", "Rosemary", "Sweet Potatoe", "Turnips",
-             "Beets", "Scallion", "Onion Vidala", "Onion Red", "Rose", "Daffoldil",
-         ];
- 
-         const plantSelect = document.getElementById("plantName");
-         plantNames.forEach(name => {
-             let option = document.createElement("option");
-             option.value = name;
-             option.textContent = name;
-             plantSelect.appendChild(option);
-         });
-     </script>
- </select>
- 
-                 <label for="harvestDate">Harvest Date:</label>
-                 <input type="date" id="harvestDate" required>
- 
-                 <label for="location">Harvest Location:</label>
-                 <select id="location" required>
-                     <option value="">Select a location</option>
-                     <option value="Raised Bed 1">Raised Bed 1</option>
-                     <option value="Raised Bed 2">Raised Bed 2</option>
-                     <option value="Greenhouse">Greenhouse</option>
-                     <option value="Backyard Garden">Backyard Garden</option>
-                 </select>
- 
-                 <label for="weight">Weight Harvested (lbs):</label>
-                 <input type="number" id="weight" step="0.1" required>
- 
-                 <button type="button" onclick="addHarvest()">Add to List</button>
-                 <button type="button" onclick="submitAll()">Submit to Database</button>
-             </form>
-             <h3>Harvest List</h3>
-             <ul id="harvestList"></ul>
-         </div>
-     </div>
- 
-     <script>
-         function openLightbox(imageSrc) {
-             document.getElementById("lightbox-img").src = imageSrc;
-             document.getElementById("lightbox").classList.add("show");
-         }
- 
-         function closeLightbox() {
-             document.getElementById("lightbox").classList.remove("show");
-         }
-     </script>
-     <script>
-         let harvestEntries = [];
+                <td>Harvesting Heroes</td>
+            </tr>
+        </table>
+    </div>
+    <div class="nav-menu">
+        <a href="#harvests-link">Harvests</a>
+        <a href="#our-mission-link">Our Mission</a>
+        <a href="#grow-goal-link">Grow Goal</a>
+        <a href="#about-us-link">About Us</a>
+    </div>
+
+    <!-- Harvests section -->
+    <div class="products" id="harvests-link">
+        <h2>Harvests</h2>
+        <table>
+            <tr>
+                <td>
+                    <video width="400" height="300" controls>
+                        <source src="https://d2g0hnizs6unkc.cloudfront.net/Malik%20at%20table%20harvest.mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <button onclick="document.querySelector('video').requestFullscreen()">Fullscreen</button>
+                </td>
+                <td><img src="adamwatermelon.jpeg" onclick="openLightbox(this.src)"><p>Adam Harvesting a Watermelon</p></td>
+                <td><img src="hugewatermelon.jpeg" onclick="openLightbox(this.src)"><p>Kesha's Huge Watermelon</p></td>
+            </tr>
+            <tr>
+                <td><img src="shellingpeas.jpeg" onclick="openLightbox(this.src)"><p>Shelling Peas</p></td>
+                <td><img src="Malik & Nia harvesting onions.jpg" onclick="openLightbox(this.src)"><p>Malik & Nia Onion Harvest</p></td>
+                <td><img src="peaches.jpeg" onclick="openLightbox(this.src)"><p>Peach Harvest</p></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Lightbox Container -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img">
+    </div>
+
+    <!-- Grow Goal section with Harvest Tracker -->
+    <div class="sidebar">
+        <div class="location" id="grow-goal-link">
+            <h2>Grow Goal</h2>
+            <p>Our goal is to grow 500 lbs of food this season!</p>
+            <div class="tracker-container">
+                <h3>Harvest Tracker</h3>
+                <p id="trackerMessage">Loading...</p>
+                <div style="width: 300px; height: 300px; display: flex; justify-content: center; align-items: center;">
+                    <canvas id="harvestChart"></canvas>
+                </div>
+            </div>
+            <h2>Enter Harvest Data</h2>
+            <form id="harvestForm">
+                <label for="plantName">Plant Name:</label>
+                <select id="plantName" required>
+                    <option value="">Select a plant</option>
+                </select>
+                <label for="harvestDate">Harvest Date:</label>
+                <input type="date" id="harvestDate" required>
+
+                <label for="location">Harvest Location:</label>
+                <select id="location" required>
+                    <option value="">Select a location</option>
+                    <option value="Raised Bed 1">Raised Bed 1</option>
+                    <option value="Raised Bed 2">Raised Bed 2</option>
+                    <option value="Greenhouse">Greenhouse</option>
+                    <option value="Backyard Garden">Backyard Garden</option>
+                </select>
+
+                <label for="weight">Weight Harvested (lbs):</label>
+                <input type="number" id="weight" step="0.1" required>
+
+                <button type="button" onclick="addHarvest()">Add to List</button>
+                <button type="button" onclick="submitAll()">Submit to Database</button>
+            </form>
+            <h3>Harvest List</h3>
+            <ul id="harvestList"></ul>
+        </div>
+    </div>
+
+    <script>
+        const plantNames = [
+            "Cantaloupe", "Crookneck Squash", "Greek Pepperoncini Pepper", "Sunflower Mammoth Grey",
+            "Echinacea", "Sunflower Lemon Queen", "Straightneck Squash", "Okra Baby Bubba Hybrid",
+            "Cucumber Muncher variety", "Cucumber Picklebush variety", "Basil",
+            "Tomato Chadwick Cherry", "Sunflower Autumn Beauty", "Bellpepper", "Sweet Pea Oregon Sugar Pod", "Tomato Brandywine",
+            "Tomato Brandywine Pink", "Green Bean", "Zuchini", "Hollyhock Flowers", "Watermelon Sugar Baby",
+            "Watermelon Crimson Sweet", "Watermelon Jubilee", "Nasturtium", "Spinach", "Cabbage", "Collards", "Broccoli",
+            "Carolina Reaper Pepper", "Habanero Pepper", "Cauliflower", "Potatoes", "Strawberry", "Asparagus",
+            "Blackberries", "Pumpkin", "Sugar Cane", "Thyme", "Basil", "Rosemary", "Sweet Potatoe", "Turnips",
+            "Beets", "Scallion", "Onion Vidala", "Onion Red", "Rose", "Daffoldil"
+        ];
+        const plantSelect = document.getElementById("plantName");
+        plantNames.forEach(name => {
+            let option = document.createElement("option");
+            option.value = name;
+            option.textContent = name;
+            plantSelect.appendChild(option);
+        });
+
+        function openLightbox(imageSrc) {
+            document.getElementById("lightbox-img").src = imageSrc;
+            document.getElementById("lightbox").classList.add("show");
+        }
+
+        function closeLightbox() {
+            document.getElementById("lightbox").classList.remove("show");
+        }
+
+        let harvestEntries = [];
 
         function addHarvest() {
             const plantName = document.getElementById('plantName').value;
@@ -187,74 +180,26 @@
 
             harvestEntries.forEach((entry, index) => {
                 const listItem = document.createElement("li");
-                listItem.textContent = ${entry.plantName} - ${entry.weight} lbs on ${entry.harvestDate} (${entry.location}) ;
+                listItem.textContent = `${entry.plantName} - ${entry.weight} lbs on ${entry.harvestDate} (${entry.location})`;
 
                 const deleteButton = document.createElement("button");
-                deleteButton.textContent = "🗑 Delete";
-                deleteButton.className = "delete-btn";
-                deleteButton.onclick = () => deleteEntry(index);
+                deleteButton.textContent = "Remove";
+                deleteButton.onclick = () => {
+                    harvestEntries.splice(index, 1);
+                    updateHarvestList();
+                };
 
                 listItem.appendChild(deleteButton);
                 list.appendChild(listItem);
             });
         }
 
-        function deleteEntry(index) {
-            harvestEntries.splice(index, 1);
+        function submitAll() {
+            console.log("Submitting:", harvestEntries);
+            alert("Submitted to database (simulated).");
+            harvestEntries = [];
             updateHarvestList();
         }
-
-async function submitAll() {
-    if (harvestEntries.length === 0) {
-        alert("No harvests to submit.");
-        return;
-    }
-
-    try {
-        const response = await fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ harvests: harvestEntries })
-        });
-
-        if (!response.ok) throw new Error("API request failed");
-
-        const result = await response.json();
-        alert("✅ Submission Successful: " + result.message);
-
-        // Clear the list and update the tracker after submission
-        harvestEntries = [];
-        updateHarvestList();
-        updateTracker(); 
-
-    } catch (error) {
-        alert("❌ Error submitting data: " + error.message);
-    }
-}
-        async function fetchTotalHarvest() {
-            try {
-                const response = await fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/getTotalHarvest");
-                const data = await response.json();
-                return data.totalWeight || 0;
-            } catch (error) {
-                console.error("Error fetching total harvest:", error);
-                return 0;
-            }
-        }
-
- 
-         function updateTracker() {
-    let harvested = harvestData.reduce((sum, item) => sum + item.weight, 0);
-    let remaining = Math.max(500 - harvested, 0);
-
-    chart.data.datasets[0].data = [harvested, remaining];
-    chart.update();
-
-    trackerMessage.textContent = Total Harvested: ${harvested.toFixed(1)} lbs out of 500 lbs goal.;
-}
- 
-         window.onload = function() { updateTracker(); };     
-  </script>
- <script src="harvest.js"></script>
- </body>
- </html>
+    </script>
+</body>
+</html>
