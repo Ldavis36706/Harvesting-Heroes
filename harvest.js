@@ -1,103 +1,99 @@
-let harvestChart;
-
 document.addEventListener("DOMContentLoaded", function () {
-    const ctx = document.getElementById('harvestChart').getContext('2d');
+    const form = document.getElementById("harvestForm");
+    const apiEndpoint = "https://your-api-endpoint.amazonaws.com/Prod/harvest"; // Replace with your actual endpoint
+    const totalExpectedWeight = 500; // Adjust based on your total expected harvest
+    let harvestChart;
+
+    const ctx = document.getElementById("harvestTracker").getContext("2d");
+
+    // Initialize the chart with 0 harvested weight
     harvestChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: ['Harvested', 'Remaining'],
             datasets: [{
-                data: [0, 500], // Will be updated after fetch
-                backgroundColor: ['#4CAF50', '#e0e0e0'],
+                data: [0, totalExpectedWeight],
+                backgroundColor: ['#4caf50', '#e0e0e0'],
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
-            cutout: '70%',
             plugins: {
                 legend: {
-                    display: true,
                     position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return `${context.label}: ${context.parsed} lbs`;
+                        }
+                    }
                 }
             }
         }
     });
 
-    // Fetch initial total weight from DynamoDB and update chart
-    fetch('https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvestWeight')
+    // Function to update chart with current total
+    function updateHarvestChart(weight) {
+        if (harvestChart) {
+            const remaining = Math.max(totalExpectedWeight - weight, 0);
+            harvestChart.data.datasets[0].data = [weight, remaining];
+            harvestChart.update();
+        }
+    }
+
+    // Fetch and update chart on page load
+    fetch(apiEndpoint)
         .then(response => response.json())
         .then(data => {
             const totalWeight = data.TotalHarvestWeight;
             updateHarvestChart(totalWeight);
             document.getElementById("trackerMessage").textContent = `Total Harvested: ${totalWeight} lbs`;
-  })
-  .catch(error => {
-      console.error("Error fetching total harvest weight:", error);
-  });
-                
-
-            updateHarvestChart(totalWeight);
-            document.getElementById('trackerMessage').innerText = `We have harvested ${totalWeight} lbs so far!`;
         })
         .catch(error => {
-            console.error("Error fetching harvest data:", error);
-            document.getElementById('trackerMessage').innerText = "Could not load harvest data.";
+            console.error("Error fetching total harvest weight:", error);
         });
 
-    const form = document.getElementById('harvestForm');
-    form.addEventListener('submit', function (event) {
+    // Handle form submission
+    form.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        const plantName = document.getElementById('plantName').value;
-        const harvestDate = document.getElementById('harvestDate').value;
-        const location = document.getElementById('location').value;
-        const weight = parseFloat(document.getElementById('weight').value);
-
-        if (!plantName || !harvestDate || !location || isNaN(weight)) {
-            alert("Please fill out all fields correctly.");
-            return;
-        }
-
-        const harvestData = {
-            plantName,
-            harvestDate,
-            location,
-            weight
+        const formData = new FormData(form);
+        const entry = {
+            date: formData.get("date"),
+            crop: formData.get("crop"),
+            weight: parseFloat(formData.get("weight"))
         };
 
-        fetch('https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler', {
-            method: 'POST',
+        fetch(apiEndpoint, {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify(harvestData)
+            body: JSON.stringify(entry)
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Failed to submit harvest data.");
+                throw new Error("Failed to save entry");
             }
             return response.json();
         })
-        .then(result => {
-            updateHarvestChart(weight);
-            alert("Harvest data submitted successfully!");
+        .then(data => {
+            alert("Entry saved successfully!");
             form.reset();
+
+            // Refetch total after new entry
+            return fetch(apiEndpoint);
+        })
+        .then(response => response.json())
+        .then(data => {
+            const totalWeight = data.TotalHarvestWeight;
+            updateHarvestChart(totalWeight);
+            document.getElementById("trackerMessage").textContent = `Total Harvested: ${totalWeight} lbs`;
         })
         .catch(error => {
-            console.error("Error submitting harvest data:", error);
-            alert("Error submitting data.");
+            console.error("Error submitting entry or updating chart:", error);
         });
     });
 });
-
-function updateHarvestChart(addedWeight) {
-    if (!harvestChart) return;
-    
-    const currentHarvested = harvestChart.data.datasets[0].data[0];
-    const newTotal = currentHarvested + addedWeight;
-    const remaining = Math.max(500 - newTotal, 0);
-
-    harvestChart.data.datasets[0].data = [newTotal, remaining];
-    harvestChart.update();
-}
