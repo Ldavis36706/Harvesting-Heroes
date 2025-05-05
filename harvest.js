@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("harvestForm");
-    const apiEndpoint = "https://your-api-endpoint.amazonaws.com/Prod/harvest"; // Replace with your actual endpoint
+    const apiEndpoint = "https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvestWeight"; // Replace with your actual endpoint
     const totalExpectedWeight = 500; // Adjust based on your total expected harvest
     let harvestChart;
 
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
             weight: parseFloat(formData.get("weight"))
         };
 
-        fetch(apiEndpoint, {
+        fetch('https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
             form.reset();
 
             // Refetch total after new entry
-            return fetch(apiEndpoint);
+            return fetch('https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvestWeight');
         })
         .then(response => response.json())
         .then(data => {
