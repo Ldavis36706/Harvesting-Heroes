@@ -1,59 +1,64 @@
-let harvestData = [];
+let harvestChart;
 
-async function fetchHarvestData() {
-    try {
-        const response = await fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler");
-        if (response.ok) {
-            harvestData = await response.json();
-            updateTracker();
-        } else {
-            console.error("Failed to fetch harvest data.");
-        }
-    } catch (error) {
-        console.error("Error fetching harvest data:", error);
+window.onload = () => {
+  const ctx = document.getElementById('harvestChart').getContext('2d');
+  harvestChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Harvested', 'Remaining'],
+      datasets: [{
+        data: [0, 500], // Initially harvested is 0, remaining is 500
+        backgroundColor: ['#4CAF50', '#e0e0e0'],
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
     }
+  });
+};
+
+function updateChart(newHarvestWeight) {
+  const currentHarvested = harvestChart.data.datasets[0].data[0];
+  const harvested = currentHarvested + newHarvestWeight;
+  const remaining = Math.max(500 - harvested, 0);
+  harvestChart.data.datasets[0].data = [harvested, remaining];
+  harvestChart.update();
 }
 
-async function submitHarvestForm(e) {
-    e.preventDefault();
+async function saveToDynamoDB(entry) {
+  try {
+    const response = await fetch('https://your-api-url.amazonaws.com/prod/submitHarvest', {
+      method: 'POST',
+      body: JSON.stringify(entry),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
 
-    const plantName = document.getElementById("plantName").value;
-    const harvestDate = document.getElementById("harvestDate").value;
-    const location = document.getElementById("location").value;
-    const weight = parseFloat(document.getElementById("weight").value);
-
-    const data = { plantName, harvestDate, location, weight };
-
-    try {
-        const response = await fetch("https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
-
-        if (response.ok) {
-            alert("Harvest entry added!");
-            document.getElementById("harvestForm").reset();
-            fetchHarvestData(); // refresh data after submission
-        } else {
-            alert("Failed to submit data.");
-        }
-    } catch (error) {
-        alert("An error occurred. Please try again.");
-        console.error(error);
+    if (response.ok) {
+      const result = await response.json();
+      console.log("Saved to DynamoDB:", result);
+      updateChart(entry.weight);
+    } else {
+      console.error("Failed to save to DynamoDB:", response.statusText);
     }
+  } catch (error) {
+    console.error("Error saving to DynamoDB:", error);
+  }
 }
 
-function updateTracker() {
-    const harvested = harvestData.reduce((sum, item) => sum + item.weight, 0);
-    const remaining = Math.max(500 - harvested, 0);
+document.getElementById("harvestForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    chart.data.datasets[0].data = [harvested, remaining];
-    chart.update();
+  const entry = {
+    plantName: document.getElementById("plantName").value,
+    harvestDate: document.getElementById("harvestDate").value,
+    location: document.getElementById("location").value,
+    weight: parseFloat(document.getElementById("weight").value)
+  };
 
-    const trackerMessage = document.getElementById("trackerMessage");
-    trackerMessage.textContent = `Total Harvested: ${harvested.toFixed(1)} lbs out of 500 lbs goal.`;
-}
+  await saveToDynamoDB(entry);
 
-document.getElementById("harvestForm").addEventListener("submit", submitHarvestForm);
-window.onload = fetchHarvestData;
+  document.getElementById("harvestForm").reset();
+});
