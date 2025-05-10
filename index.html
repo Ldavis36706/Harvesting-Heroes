@@ -203,40 +203,6 @@
             updateHarvestList();
         }
     </script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const totalExpectedWeight = 500;
-    let harvestChart;
-
-    const ctx = document.getElementById("harvestChart").getContext("2d");
-
-    harvestChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Harvested', 'Remaining'],
-            datasets: [{
-                data: [0, totalExpectedWeight],
-                backgroundColor: ['#4caf50', '#e0e0e0'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return `${context.label}: ${context.parsed} lbs`;
-                        }
-                    }
-                }
-            }
-        }
-    });
 
     function updateHarvestChart(weight) {
         const remaining = Math.max(totalExpectedWeight - weight, 0);
