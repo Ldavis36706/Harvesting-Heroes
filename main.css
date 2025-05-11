@@ -142,3 +142,10 @@ h2 {
     font-size: 12px;
     text-align: center;
 }
+.tracker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+}
+
