@@ -85,26 +85,27 @@
         <img id="lightbox-img">
     </div>
 
-
     <!-- Grow Goal section with Harvest Tracker -->
     <div class="sidebar">
         <div class="location" id="grow-goal-link">
             <h2>Grow Goal</h2>
             <p>Our goal is to grow 500 lbs of food this season!</p>
             
-<div class="tracker-container">
-    <h2>Harvest Tracker</h2>
-    <p id="trackerMessage">Loading...</p>
-    <div style="width: 300px; height: 300px; display: flex; justify-content: center; align-items: center;">
-        <canvas id="harvestTracker"></canvas>
-    </div>
-</div>                
+            <div class="tracker-container">
+                <h2>Harvest Tracker</h2>
+                <p id="trackerMessage">Loading...</p>
+                <div style="width: 300px; height: 300px; display: flex; justify-content: center; align-items: center;">
+                    <canvas id="harvestTracker"></canvas>
+                </div>
+            </div>                
+
             <h2>Enter Harvest Data</h2>
             <form id="harvestForm">
                 <label for="plantName">Plant Name:</label>
                 <select id="plantName" required>
                     <option value="">Select a plant</option>
                 </select>
+
                 <label for="harvestDate">Harvest Date:</label>
                 <input type="date" id="harvestDate" required>
 
@@ -148,6 +149,8 @@
             plantSelect.appendChild(option);
         });
 
+        let harvestEntries = []; // 🔧 Added missing variable definition
+
         function openLightbox(imageSrc) {
             document.getElementById("lightbox-img").src = imageSrc;
             document.getElementById("lightbox").classList.add("show");
@@ -157,9 +160,9 @@
             document.getElementById("lightbox").classList.remove("show");
         }
 
-        const totalExpectedWeight = 500; // or whatever your goal is
+        const totalExpectedWeight = 500;
 
-       let harvestChart = new Chart(document.getElementById("harvestTracker"), {
+        let harvestChart = new Chart(document.getElementById("harvestTracker"), {
             type: "doughnut",
             data: {
                 labels: ["Harvested", "Remaining"],
@@ -173,7 +176,25 @@
                 maintainAspectRatio: false
             }
         });
-        
+
+        function updateHarvestChart(totalWeight) {
+            harvestChart.data.datasets[0].data = [totalWeight, totalExpectedWeight - totalWeight];
+            harvestChart.update();
+        }
+
+        function fetchTotalHarvestWeight() {
+            fetch('https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvestWeight')
+                .then(response => response.json())
+                .then(data => {
+                    const totalWeight = data.TotalHarvestWeight;
+                    updateHarvestChart(totalWeight);
+                    document.getElementById("trackerMessage").textContent = `Total Harvested: ${totalWeight} lbs`;
+                })
+                .catch(error => {
+                    console.error("Error fetching total harvest weight:", error);
+                });
+        }
+
         function addHarvest() {
             const plantName = document.getElementById('plantName').value;
             const harvestDate = document.getElementById('harvestDate').value;
@@ -191,9 +212,7 @@
             updateHarvestList();
         }
 
-
-        
-       function updateHarvestList() {
+        function updateHarvestList() {
             const list = document.getElementById('harvestList');
             list.innerHTML = "";
 
@@ -213,24 +232,7 @@
             });
         }
 
-
-           function fetchTotalHarvestWeight() {
-                fetch('https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvestWeight')
-                    .then(response => response.json())
-                    .then(data => {
-                        const totalWeight = data.TotalHarvestWeight;
-                        updateHarvestChart(totalWeight);
-                        document.getElementById("trackerMessage").textContent = `Total Harvested: ${totalWeight} lbs`;
-                    })
-                    .catch(error => {
-                        console.error("Error fetching total harvest weight:", error);
-                    });
-        }
-
-        // Initial load
-        fetchTotalHarvestWeight();
-
-          function submitAll() {
+        function submitAll() {
             if (harvestEntries.length === 0) {
                 alert("No entries to submit.");
                 return;
@@ -246,7 +248,7 @@
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
-            }
+                }
                 return response.json();
             })
             .then(data => {
@@ -262,8 +264,9 @@
             });
         }
 
+        // Initial load
+        fetchTotalHarvestWeight();
     </script>
-    <script src="harvest.js"></script>    
 
 </body>
 </html>
