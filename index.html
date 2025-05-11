@@ -230,37 +230,37 @@
         // Initial load
         fetchTotalHarvestWeight();
 
-      function submitAll() {
-    if (harvestEntries.length === 0) {
-        alert("No entries to submit.");
-        return;
-    }
+          function submitAll() {
+            if (harvestEntries.length === 0) {
+                alert("No entries to submit.");
+                return;
+            }
 
-    fetch('https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ harvests: harvestEntries })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
+            fetch('https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ harvests: harvestEntries })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+            }
+                return response.json();
+            })
+            .then(data => {
+                alert("Submitted to database!");
+                console.log("✅ Success:", data);
+                harvestEntries = [];
+                updateHarvestList();
+                fetchTotalHarvestWeight(); // Refresh chart data
+            })
+            .catch(error => {
+                console.error("❌ Error submitting harvests:", error);
+                alert("Error submitting data.");
+            });
         }
-        return response.json();
-    })
-    .then(data => {
-        alert("Submitted to database!");
-        console.log("✅ Success:", data);
-        harvestEntries = [];
-        updateHarvestList();
-        fetchTotalHarvestWeight(); // Refresh chart data
-    })
-    .catch(error => {
-        console.error("❌ Error submitting harvests:", error);
-        alert("Error submitting data.");
-    });
-}
 
     </script>
     <script src="harvest.js"></script>    
