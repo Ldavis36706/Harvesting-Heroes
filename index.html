@@ -173,6 +173,26 @@
                 maintainAspectRatio: false
             }
         });
+        
+        function addHarvest() {
+            const plantName = document.getElementById('plantName').value;
+            const harvestDate = document.getElementById('harvestDate').value;
+            const weight = document.getElementById('weight').value;
+            const location = document.getElementById('location').value;
+
+            if (!plantName || !harvestDate || !weight || !location) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const entry = { plantName, harvestDate, weight, location };
+            harvestEntries.push(entry);
+
+            updateHarvestList();
+        }
+
+
+        
         function updateHarvestChart(weight) {
             const remaining = Math.max(totalExpectedWeight - weight, 0);
             harvestChart.data.datasets[0].data = [weight, remaining];
