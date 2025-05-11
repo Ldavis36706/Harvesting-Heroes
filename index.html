@@ -157,44 +157,43 @@
             document.getElementById("lightbox").classList.remove("show");
         }
 
-        let harvestEntries = [];
+        const totalExpectedWeight = 500; // or whatever your goal is
 
-        function addHarvest() {
-            const plantName = document.getElementById('plantName').value;
-            const harvestDate = document.getElementById('harvestDate').value;
-            const weight = document.getElementById('weight').value;
-            const location = document.getElementById('location').value;
-
-            if (!plantName || !harvestDate || !weight || !location) {
-                alert("Please fill in all fields.");
-                return;
+       let harvestChart = new Chart(document.getElementById("harvestTracker"), {
+            type: "doughnut",
+            data: {
+                labels: ["Harvested", "Remaining"],
+                datasets: [{
+                    data: [0, totalExpectedWeight],
+                    backgroundColor: ["#4CAF50", "#E0E0E0"]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
             }
-
-            const entry = { plantName, harvestDate, weight, location };
-            harvestEntries.push(entry);
-
-            updateHarvestList();
+        });
+        function updateHarvestChart(weight) {
+            const remaining = Math.max(totalExpectedWeight - weight, 0);
+            harvestChart.data.datasets[0].data = [weight, remaining];
+            harvestChart.update();
         }
 
-        function updateHarvestList() {
-            const list = document.getElementById('harvestList');
-            list.innerHTML = "";
-
-            harvestEntries.forEach((entry, index) => {
-                const listItem = document.createElement("li");
-                listItem.textContent = `${entry.plantName} - ${entry.weight} lbs on ${entry.harvestDate} (${entry.location})`;
-
-                const deleteButton = document.createElement("button");
-                deleteButton.textContent = "Remove";
-                deleteButton.onclick = () => {
-                    harvestEntries.splice(index, 1);
-                    updateHarvestList();
-                };
-
-                listItem.appendChild(deleteButton);
-                list.appendChild(listItem);
-            });
+           function fetchTotalHarvestWeight() {
+                fetch('https://xev1gp9cab.execute-api.us-east-1.amazonaws.com/prod/GetTotalHarvestWeight')
+                    .then(response => response.json())
+                    .then(data => {
+                        const totalWeight = data.TotalHarvestWeight;
+                        updateHarvestChart(totalWeight);
+                        document.getElementById("trackerMessage").textContent = `Total Harvested: ${totalWeight} lbs`;
+                    })
+                    .catch(error => {
+                        console.error("Error fetching total harvest weight:", error);
+                    });
         }
+
+        // Initial load
+        fetchTotalHarvestWeight();
 
       function submitAll() {
     if (harvestEntries.length === 0) {
