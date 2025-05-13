@@ -294,5 +294,41 @@
         // Initial load
         fetchTotalHarvestWeight();
     </script>
+    <script>
+      const authData = {
+        ClientId: '2l39pn13rfbasb0ht89i2fhpvq',
+        AppWebDomain: 'us-east-1yc2rfcpje.auth.us-east-1.amazoncognito.com',
+        TokenScopesArray: ['email', 'openid'],
+        RedirectUriSignIn: 'https://d84l1y8p4kdic.cloudfront.net',
+        RedirectUriSignOut: 'https://d84l1y8p4kdic.cloudfront.net',
+      };
+
+      const auth = new CognitoAuth(authData);
+
+      auth.userhandler = {
+        onSuccess: function (result) {
+          console.log("✅ Login successful", result);
+          alert("Welcome! You're signed in.");
+          document.getElementById("submitBtn").disabled = false;
+        },
+        onFailure: function (err) {
+          console.error("❌ Login failed", err);
+              alert("Sign-in failed. Please try again.");
+        }
+      };
+
+      window.onload = function () {
+        auth.parseCognitoWebResponse(window.location.href);
+      };
+
+      function login() {
+        auth.getSession();
+      }
+
+      function logout() {
+        auth.signOut();
+      }
+    </script>
+   
 </body>
 </html>
