@@ -270,7 +270,14 @@
                     "🥕 You inspire me, keep going!"
         ];
         const message = messages[Math.floor(Math.random() * messages.length)];
-        document.getElementById("trackerMessage").textContent = message;
+        const trackerMessage = document.getElementById("trackerMessage");
+        trackerMessage.textContent = message;
+        trackerMessage.style.color = "green"; // Optional styling
+
+        setTimeout(() => {
+            trackerMessage.textContent = `Total Harvested: ${harvestChart.data.datasets[0].data[0]} lbs`;
+            trackerMessage.style.color = ""; // Reset color
+        }, 15000); // Message disappears after 15 seconds
 
         console.log("✅ Success:", data);
         harvestEntries = [];
