@@ -303,6 +303,7 @@
     <script src="https://amazon-cognito-auth-js.s3.amazonaws.com/amazon-cognito-auth.min.js"></script>
 
     <script>
+    window.onload = function () {
       const authData = {
         ClientId: '2l39pn13rfbasb0ht89i2fhpvq',
         AppWebDomain: 'us-east-1yc2rfcpje.auth.us-east-1.amazoncognito.com',
@@ -324,26 +325,20 @@
         onFailure: function (err) {
           console.error("❌ Login failed", err);
               alert("Sign-in failed. Please try again.");
-            console.error("❌ Login failed", err);
-            alert("Sign-in failed. Please try again.");
         }
       };
 
+        window.logout = function () {
+            auth.signOut();
+            document.getElementById("submitBtn").disabled = true;
+            document.querySelector("button[onclick='login()']").style.display = "inline-block";
+            document.querySelector("button[onclick='logout()']").style.display = "none";
+        };
 
-      function login() {
-        auth.getSession();
-      }
-
-      function logout() {
-        auth.signOut();
-        document.getElementById("submitBtn").disabled = true;
-        document.querySelector("button[onclick='login()']").style.display = "inline-block";
-        document.querySelector("button[onclick='logout()']").style.display = "none";
-      }
-
-      window.onload = function () {
+        // Handle return from redirect
         auth.parseCognitoWebResponse(window.location.href);
 
+      
         const idToken = localStorage.getItem('CognitoIdentityServiceProvider.2l39pn13rfbasb0ht89i2fhpvq.LastAuthUser');
         if (idToken) {
           document.getElementById("submitBtn").disabled = false;
