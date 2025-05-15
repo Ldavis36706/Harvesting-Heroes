@@ -278,24 +278,24 @@
         });
     </script>
     <script type="module">
-  import { userManager } from "./main.js";
+      import { userManager } from "./main.js";
 
-  // Only run signinCallback if this is a redirect back from Cognito
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has("code") && urlParams.has("state")) {
-    userManager.signinCallback().then(function (user) {
-      console.log("✅ Logged in as:", user.profile?.email);
-      console.log("Access Token:", user.access_token);
-      console.log("ID Token:", user.id_token);
-      console.log("Refresh Token:", user.refresh_token);
-      localStorage.setItem("accessToken", user.access_token);
-      localStorage.setItem("idToken", user.id_token);
-      // Optionally update UI or redirect
-    }).catch(function (error) {
-      console.error("❌ SigninCallback Error:", error);
-    });
-  }
-</script>
+      // Only run signinCallback if this is a redirect back from Cognito
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has("code") && urlParams.has("state")) {
+        userManager.signinCallback().then(function (user) {
+          console.log("✅ Logged in as:", user.profile?.email);
+          console.log("Access Token:", user.access_token);
+          console.log("ID Token:", user.id_token);
+          console.log("Refresh Token:", user.refresh_token);
+          localStorage.setItem("accessToken", user.access_token);
+          localStorage.setItem("idToken", user.id_token);
+          // Optionally update UI or redirect
+        }).catch(function (error) {
+          console.error("❌ SigninCallback Error:", error);
+        });
+      }
+    </script>
 
 
 
