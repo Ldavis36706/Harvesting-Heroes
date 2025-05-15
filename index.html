@@ -266,17 +266,16 @@
                 alert("Error submitting data.");
             });
         }
-    <script type="module">
+
+        // Initial load
+        fetchTotalHarvestWeight();
+    </script>
+        <script type="module">
         import { userManager } from "./main.js";
 
         document.getElementById("signIn").addEventListener("click", async () => {
             await userManager.signinRedirect();
         });
-    </script>
-
-
-        // Initial load
-        fetchTotalHarvestWeight();
     </script>
 
 </body>
