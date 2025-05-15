@@ -42,6 +42,9 @@
 </head>
 <body>
     <div id="header">
+    <div>
+    <button id="signIn">Sign In</button>
+    </div>
         <table>
             <tr>
                 <td><img src="basketharvest.jpeg"></td>
@@ -263,6 +266,14 @@
                 alert("Error submitting data.");
             });
         }
+    <script type="module">
+        import { userManager } from "./main.js";
+
+        document.getElementById("signIn").addEventListener("click", async () => {
+            await userManager.signinRedirect();
+        });
+    </script>
+
 
         // Initial load
         fetchTotalHarvestWeight();
