@@ -238,35 +238,51 @@
                 return;
             }
 
-            fetch('https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ harvests: harvestEntries })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert("Submitted to database!");
-                console.log("✅ Success:", data);
-                harvestEntries = [];
-                updateHarvestList();
-                fetchTotalHarvestWeight(); // Refresh chart data
-            })
-            .catch(error => {
-                console.error("❌ Error submitting harvests:", error);
-                alert("Error submitting data.");
-            });
-        }
+        fetch('https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ harvests: harvestEntries })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            const messages = [
+                "🌻 Way to grow!",
+                "🎉 Harvest logged successfully!",
+                "🌿 Keep up the great work!",
+                "🍅 Another step toward our goal!",
+                "🥕 You're doing amazing things!"
+                "🌻 I'm so proud of you!",
+                "🎉 Congratulations, on a bountiful harvest!",
+                "🌿 Wohoo, that's what I'm talking about!",
+                "🍅 You're killing it!",
+                "🥕 Nice work, you should plant some more!"
+                "🌻 Bruh, this is good stuff!",
+                "🎉 You've got a green thumb!",
+                "🌿 I'm very impressed with your garden!",
+                "🍅 You're really making progress towards your goal!",
+                "🥕 Keep growing!"
+            ];
+            const message = messages[Math.floor(Math.random() * messages.length)];
+            const trackerMessage = document.getElementById("trackerMessage");
+            trackerMessage.textContent = message;
+            trackerMessage.style.color = "green"; // Optional: make it stand out
 
-        // Initial load
-        fetchTotalHarvestWeight();
-    </script>
-
+            console.log("✅ Success:", data);
+            harvestEntries = [];
+            updateHarvestList();
+            fetchTotalHarvestWeight(); // Refresh chart data
+        })
+        .catch(error => {
+            console.error("❌ Error submitting harvests:", error);
+            document.getElementById("trackerMessage").textContent = "❌ Error: Unable to submit your harvest. Please try again.";
+        });
+    }
 </body>
 </html>
