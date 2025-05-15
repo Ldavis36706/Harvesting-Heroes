@@ -5,7 +5,6 @@
     <link rel="icon" href="bountifulharvest.jpeg">
     <link rel="stylesheet" type="text/css" href="main.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/oidc-client-ts@2.2.1/dist/oidc-client-ts.min.js"></script>
     <style>
         /* Lightbox Styles */
         .lightbox {
@@ -42,11 +41,6 @@
     </style>
 </head>
 <body>
-    <div style="text-align: right; margin: 10px;">
-      <button onclick="login()">Login</button>
-      <button onclick="logout()">Logout</button>
-    </div>
-
     <div id="header">
         <table>
             <tr>
@@ -96,16 +90,15 @@
         <div class="location" id="grow-goal-link">
             <h2>Grow Goal</h2>
             <p>Our goal is to grow 500 lbs of food this season!</p>
-
+            
             <div class="tracker-container">
                 <h2>Harvest Tracker</h2>
                 <p id="trackerMessage">Loading...</p>
                 <div style="width: 300px; height: 300px; display: flex; justify-content: center; align-items: center;">
                     <canvas id="harvestTracker"></canvas>
                 </div>
-            </div>
-    <div>
-        <div>
+            </div>                
+
             <h2>Enter Harvest Data</h2>
             <form id="harvestForm">
                 <label for="plantName">Plant Name:</label>
@@ -129,7 +122,7 @@
                 <input type="number" id="weight" step="0.1" required>
 
                 <button type="button" onclick="addHarvest()">Add to List</button>
-                <button type="button" id="submitBtn" onclick="submitAll()">Submit to Database</button>
+                <button type="button" onclick="submitAll()">Submit to Database</button>
             </form>
             <h3>Harvest List</h3>
             <ul id="harvestList"></ul>
@@ -156,7 +149,7 @@
             plantSelect.appendChild(option);
         });
 
-        let harvestEntries = [];
+        let harvestEntries = []; // 🔧 Added missing variable definition
 
         function openLightbox(imageSrc) {
             document.getElementById("lightbox-img").src = imageSrc;
@@ -239,7 +232,7 @@
             });
         }
 
-        submitAll() {
+        function submitAll() {
             if (harvestEntries.length === 0) {
                 alert("No entries to submit.");
                 return;
@@ -259,96 +252,21 @@
                 return response.json();
             })
             .then(data => {
-                const messages = [
-                    "🌻 Way to grow!",
-                    "🎉 Harvest logged successfully!",
-                    "🌿 Keep up the great work!",
-                    "🍅 Another step toward our goal!",
-                    "🥕 You're doing amazing things!",
-                    "🌻 Keep growing!",
-                    "🎉 Great job, let's plant some more!",
-                    "🌿 Enjoy the fruits of your labor!",
-                    "🍅 I'm so proud of you!",
-                    "🥕 You're unstoppable!",
-                    "🌻 What a harvest!",
-                    "🎉 Wohoo, that's what I'm talking about!",
-                    "🌿 Bro that's an incredible harvest!",
-                    "🍅 Getting closer to hitting that goal, don't stop!",
-                    "🥕 You inspire me, keep going!"
-                ];
-                const message = messages[Math.floor(Math.random() * messages.length)];
-                const trackerMessage = document.getElementById("trackerMessage");
-                trackerMessage.textContent = message;
-                trackerMessage.style.color = "green";
-
-                setTimeout(() => {
-                    trackerMessage.textContent = Total Harvested: ${harvestChart.data.datasets[0].data[0]} lbs;
-                    trackerMessage.style.color = "";
-                }, 15000);
-
+                alert("Submitted to database!");
                 console.log("✅ Success:", data);
                 harvestEntries = [];
                 updateHarvestList();
-                fetchTotalHarvestWeight();
+                fetchTotalHarvestWeight(); // Refresh chart data
             })
             .catch(error => {
                 console.error("❌ Error submitting harvests:", error);
-                document.getElementById("trackerMessage").textContent = "❌ Error: Unable to submit your harvest. Please try again.";
+                alert("Error submitting data.");
             });
         }
 
         // Initial load
         fetchTotalHarvestWeight();
     </script>
-  const settings = {
-    authority: "https://us-east-1yc2rfcpje.auth.us-east-1.amazoncognito.com",
-    client_id: "2l39pn13rfbasb0ht89i2fhpvq",
-    redirect_uri: "https://d84l1y8p4kdic.cloudfront.net",
-    post_logout_redirect_uri: "https://d84l1y8p4kdic.cloudfront.net",
-    response_type: "code",
-    scope: "openid email profile",
-    automaticSilentRenew: true,
-    filterProtocolClaims: true,
-    loadUserInfo: true
-  };
 
-  const userManager = new oidc.UserManager(settings);
-
-  function login() {
-    userManager.signinRedirect();
-  }
-
-  function logout() {
-    userManager.signoutRedirect();
-  }
-
-  window.onload = async function () {
-    try {
-      const user = await userManager.signinRedirectCallback();
-      console.log("✅ Sign-in complete:", user);
-    } catch (err) {
-      console.log("ℹ️ No redirect callback to process (normal on first visit)");
-    }
-
-    try {
-      const user = await userManager.getUser();
-      if (user && !user.expired) {
-        console.log("✅ Logged in:", user);
-        document.querySelector("button[onclick='login()']").style.display = "none";
-        document.querySelector("button[onclick='logout()']").style.display = "inline-block";
-        document.querySelector("button[onclick='submitAll()']").disabled = false;
-      } else {
-        console.log("🔒 Not logged in");
-        document.querySelector("button[onclick='login()']").style.display = "inline-block";
-        document.querySelector("button[onclick='logout()']").style.display = "none";
-        document.querySelector("button[onclick='submitAll()']").disabled = true;
-      }
-    } catch (err) {
-      console.error("❌ Error getting user:", err);
-    }
-  };
-</script>
-
-   
 </body>
 </html>
