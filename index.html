@@ -39,31 +39,28 @@
             cursor: pointer;
         }
     </style>
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-    },
-
-    <div>
-      Hello: <pre id="email"></pre>
-      Access token: <pre id="access-token"></pre>
-      ID token: <pre id="id-token"></pre>
-      Refresh token: <pre id="refresh-token"></pre>
-    </div>
-    <div id="header">
-    <div>
-        <button id="signIn">Sign In</button>
-    </div>
-     <button id="signOut">Sign Out</button>
 </head>
 <body>
-    <table>
-            <tr>
-                <td><img src="basketharvest.jpeg"></td>
-                <td>Harvesting Heroes</td>
-            </tr>
-        </table>
+    <div>
+        Hello: <pre id="email"></pre>
+        Access token: <pre id="access-token"></pre>
+        ID token: <pre id="id-token"></pre>
+        Refresh token: <pre id="refresh-token"></pre>
     </div>
+    <div id="header">
+        <div>
+            <button id="signIn">Sign In</button>
+        </div>
+        <button id="signOut">Sign Out</button>
+    </div>
+
+    <table>
+        <tr>
+            <td><img src="basketharvest.jpeg"></td>
+            <td>Harvesting Heroes</td>
+        </tr>
+    </table>
+
     <div class="nav-menu">
         <a href="#harvests-link">Harvests</a>
         <a href="#our-mission-link">Our Mission</a>
@@ -164,7 +161,7 @@
             plantSelect.appendChild(option);
         });
 
-        let harvestEntries = []; // 🔧 Added missing variable definition
+        let harvestEntries = [];
 
         function openLightbox(imageSrc) {
             document.getElementById("lightbox-img").src = imageSrc;
@@ -262,7 +259,8 @@
             fetch('https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ harvests: harvestEntries })
             })
@@ -277,7 +275,7 @@
                 console.log("✅ Success:", data);
                 harvestEntries = [];
                 updateHarvestList();
-                fetchTotalHarvestWeight(); // Refresh chart data
+                fetchTotalHarvestWeight();
             })
             .catch(error => {
                 console.error("❌ Error submitting harvests:", error);
@@ -285,39 +283,38 @@
             });
         }
 
-        // Initial load
         fetchTotalHarvestWeight();
     </script>
-   
+
     <script type="module">
-      import { userManager } from "./main.js";
+        import { userManager, signOutRedirect } from "./main.js";
 
-      document.getElementById("signIn").addEventListener("click", () => {
-        userManager.signinRedirect();
-      });
-  
-      import { userManager } from "./main.js";
-
-      // Only run signinCallback if this is a redirect back from Cognito
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has("code") && urlParams.has("state")) {
-        userManager.signinCallback().then(function (user) {
-          console.log("✅ Logged in as:", user.profile?.email);
-          console.log("Access Token:", user.access_token);
-          console.log("ID Token:", user.id_token);
-          console.log("Refresh Token:", user.refresh_token);
-          localStorage.setItem("accessToken", user.access_token);
-          localStorage.setItem("idToken", user.id_token);
-          // Optionally update UI or redirect
-        }).catch(function (error) {
-          console.error("❌ SigninCallback Error:", error);
+        document.getElementById("signIn").addEventListener("click", () => {
+            userManager.signinRedirect();
         });
-        import { signOutRedirect } from "./main.js";
 
         document.getElementById("signOut").addEventListener("click", () => {
-          signOutRedirect();
-        });     
-      }
+            signOutRedirect();
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("code") && urlParams.has("state")) {
+            userManager.signinCallback().then(user => {
+                console.log("✅ Logged in as:", user.profile?.email);
+                console.log("Access Token:", user.access_token);
+                console.log("ID Token:", user.id_token);
+                console.log("Refresh Token:", user.refresh_token);
+                localStorage.setItem("accessToken", user.access_token);
+                localStorage.setItem("idToken", user.id_token);
+                localStorage.setItem("refreshToken", user.refresh_token);
+                document.getElementById("email").textContent = user.profile?.email || "";
+                document.getElementById("access-token").textContent = user.access_token || "";
+                document.getElementById("id-token").textContent = user.id_token || "";
+                document.getElementById("refresh-token").textContent = user.refresh_token || "";
+            }).catch(error => {
+                console.error("❌ SigninCallback Error:", error);
+            });
+        }
     </script>
 </body>
 </html>
