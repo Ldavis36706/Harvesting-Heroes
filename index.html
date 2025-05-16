@@ -39,20 +39,25 @@
             cursor: pointer;
         }
     </style>
-</head>
-<body>
-    <div id="header">
-    <div>
-        <button id="signIn">Sign In</button>
-    </div>
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    },
+
     <div>
       Hello: <pre id="email"></pre>
       Access token: <pre id="access-token"></pre>
       ID token: <pre id="id-token"></pre>
       Refresh token: <pre id="refresh-token"></pre>
     </div>
-
-        <table>
+    <div id="header">
+    <div>
+        <button id="signIn">Sign In</button>
+    </div>
+     <button id="signOut">Sign Out</button>
+</head>
+<body>
+    <table>
             <tr>
                 <td><img src="basketharvest.jpeg"></td>
                 <td>Harvesting Heroes</td>
@@ -243,6 +248,12 @@
         }
 
         function submitAll() {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                alert("Please sign in to submit data.");
+                return;
+            }
+
             if (harvestEntries.length === 0) {
                 alert("No entries to submit.");
                 return;
@@ -281,6 +292,12 @@
     <script type="module">
       import { userManager } from "./main.js";
 
+      document.getElementById("signIn").addEventListener("click", () => {
+        userManager.signinRedirect();
+      });
+  
+      import { userManager } from "./main.js";
+
       // Only run signinCallback if this is a redirect back from Cognito
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has("code") && urlParams.has("state")) {
@@ -295,10 +312,12 @@
         }).catch(function (error) {
           console.error("❌ SigninCallback Error:", error);
         });
+        import { signOutRedirect } from "./main.js";
+
+        document.getElementById("signOut").addEventListener("click", () => {
+          signOutRedirect();
+        });     
       }
     </script>
-
-
-
 </body>
 </html>
