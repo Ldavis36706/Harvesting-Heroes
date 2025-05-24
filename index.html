@@ -358,5 +358,31 @@
             });
         }
     </script>
+    <script>
+      async function fetchTotalProduceValue() {
+        const apiUrl = 'https://1ysvae9t7h.execute-api.us-east-1.amazonaws.com/prod/harvestEntryHandler'; // Update if needed
+
+        try {
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+
+          let total = 0;
+          data.forEach(entry => {
+            if (entry.PlantName === "Cabbage" && entry.TotalValue) {
+              total += parseFloat(entry.TotalValue);
+            }
+          });
+
+          const valueElement = document.getElementById("totalProduceValue");
+          valueElement.textContent = `$${total.toFixed(2)}`;
+        } catch (error) {
+          console.error("Error fetching total produce value:", error);
+        }
+      }
+
+      // Run on page load
+      window.onload = fetchTotalProduceValue;
+</script>
 </body>
 </html>
+
